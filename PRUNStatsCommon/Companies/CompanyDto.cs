@@ -8,12 +8,12 @@ namespace PRUNStatsCommon.Companies
         public List<PlanetDto> Planets { get; set; } = [];
 
         [JsonConverter(typeof(JsonConverterGuid))]
-        public required Guid UserDataId { get; set; }
+        public Guid? UserDataId { get; set; }
 
         [JsonConverter(typeof(JsonConverterGuid))]
-        public required Guid UserId { get; set; }
-        public required string UserName { get; set; }
-        public required string SubscriptionLevel { get; set; }
+        public Guid? UserId { get; set; }
+        public string? UserName { get; set; }
+        public string? SubscriptionLevel { get; set; }
         public string? Tier { get; set; }
         public bool Team { get; set; }
         public bool Pioneer { get; set; }
@@ -21,7 +21,7 @@ namespace PRUNStatsCommon.Companies
         public long CreatedEpochMs { get; set; }
 
         [JsonConverter(typeof(JsonConverterGuid))]
-        public required Guid CompanyId { get; set; }
+        public Guid? CompanyId { get; set; }
         public required string CompanyName { get; set; }
         public required string CompanyCode { get; set; }
         public required string CountryId { get; set; }

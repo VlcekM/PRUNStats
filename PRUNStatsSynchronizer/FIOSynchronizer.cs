@@ -26,6 +26,8 @@ namespace PRUNStatsSynchronizer
             var progress = 0;
             foreach (var companyDto in companyDtos)
             {
+                if (string.IsNullOrWhiteSpace(companyDto.UserName)) continue; //skip companies without a user
+
                 //handle user create/update
                 var user = await _statsContext.Users.FirstOrDefaultAsync(u => u.PRGUID == companyDto.UserId) ?? new UserModel
                 {
@@ -76,40 +78,40 @@ namespace PRUNStatsSynchronizer
                                           LastUpdatedAtUTC = now
                                       };
 
-                //handle planet create/update
-                foreach (var planetDto in companyDto.Planets)
-                {
-                    var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
-                    {
-                        Name = planetDto.PlanetName,
-                        NaturalId = planetDto.PlanetNaturalId,
-                        PRGUID = planetDto.PlanetId,
-                        FirstImportedAtUTC = now,
-                        LastUpdatedAtUTC = now
-                    };
+                ////handle planet create/update
+                //foreach (var planetDto in companyDto.Planets)
+                //{
+                //    var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
+                //    {
+                //        Name = planetDto.PlanetName,
+                //        NaturalId = planetDto.PlanetNaturalId,
+                //        PRGUID = planetDto.PlanetId,
+                //        FirstImportedAtUTC = now,
+                //        LastUpdatedAtUTC = now
+                //    };
 
-                    //now that we got the planet, let's handle the base
-                    var planetBase = await _statsContext.Bases
-                        .FirstOrDefaultAsync(b => b.Company == company && b.Planet == planet)
-                    ?? new BaseModel
-                    {
-                        Planet = planet,
-                        Company = company,
-                        FirstImportedAtUTC = now,
-                        LastUpdatedAtUTC = now
-                    };
+                //    //now that we got the planet, let's handle the base
+                //    var planetBase = await _statsContext.Bases
+                //        .FirstOrDefaultAsync(b => b.Company == company && b.Planet == planet)
+                //    ?? new BaseModel
+                //    {
+                //        Planet = planet,
+                //        Company = company,
+                //        FirstImportedAtUTC = now,
+                //        LastUpdatedAtUTC = now
+                //    };
 
-                    if (company.Bases.All(b => b.Planet.PRGUID != planet.PRGUID)) company.Bases.Add(planetBase);
-                }
+                //    if (company.Bases.All(b => b.Planet.PRGUID != planet.PRGUID)) company.Bases.Add(planetBase);
+                //}
 
                 user.LastUpdatedAtUTC = now;
                 if (corporation is not null) corporation.LastUpdatedAtUTC = now;
                 company.LastUpdatedAtUTC = now;
-                foreach(var b in company.Bases)
-                {
-                    b.LastUpdatedAtUTC = now;
-                    b.Planet.LastUpdatedAtUTC = now;
-                }
+                //foreach(var b in company.Bases)
+                //{
+                //    b.LastUpdatedAtUTC = now;
+                //    b.Planet.LastUpdatedAtUTC = now;
+                //}
 
                 _statsContext.Companies.Update(company);
 
@@ -129,20 +131,34 @@ namespace PRUNStatsSynchronizer
             //TEMP CODE UNTIL THE /COMPANY/ALL ENDPOINT IS IMPLEMENTED IN FIORest
 
             //get all codes for 26 letters
-            var twoCodes = new List<string>(26 * 26);
+            var companyCodes = new List<string>(26 * 26 + 26 * 26 * 26);
             for (var i = 0; i < 26; i++)
             {
                 for (var j = 0; j < 26; j++)
                 {
-                    twoCodes.Add(((char)('A' + i)).ToString() + ((char)('A' + j)).ToString());
+                    companyCodes.Add(((char)('A' + i)).ToString() + ((char)('A' + j)).ToString());
+                }
+            }
+
+            for (var i = 0; i < 26; i++)
+            {
+                for (var j = 0; j < 26; j++)
+                {
+                    for (var k = 0; k < 26; k++)
+                    {
+                        companyCodes.Add(((char)('A' + i)).ToString() + ((char)('A' + j)).ToString() + ((char)('A' + k)).ToString());
+                    }
                 }
             }
 
             var companies = new List<CompanyDto>();
 
+            var progress = 0;
             //request data for each code from FIO api
-            await Parallel.ForEachAsync(twoCodes, new ParallelOptions { MaxDegreeOfParallelism = 100 }, async (code, token) =>
+            await Parallel.ForEachAsync(companyCodes, new ParallelOptions { MaxDegreeOfParallelism = 100 }, async (code, token) =>
             {
+                progress++;
+                Console.WriteLine($"Fetching {progress} / {companyCodes.Count}");
                 var response = await _httpClientFactory.CreateClient().GetAsync($"https://rest.fnar.net/company/code/{code}", token);
 
                 if (!response.IsSuccessStatusCode) return;
@@ -156,6 +172,7 @@ namespace PRUNStatsSynchronizer
                 var company = await JsonSerializer.DeserializeAsync<CompanyDto>(stream, cancellationToken: token);
 
                 companies.Add(company);
+
             });
 
             return companies;
