@@ -4,7 +4,7 @@ using PRUNStatsCommon.Bases;
 using PRUNStatsCommon.Corporations;
 using PRUNStatsCommon.Users;
 
-namespace PRUNStatsCommon.Companies
+namespace PRUNStatsCommon.Companies.Models
 {
     [Table("Companies", Schema = "prun")]
     public class CompanyModel : EntityModelFullBase

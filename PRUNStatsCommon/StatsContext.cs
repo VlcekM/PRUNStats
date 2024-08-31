@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PRUNStatsCommon.Bases;
-using PRUNStatsCommon.Companies;
+using PRUNStatsCommon.Companies.Models;
 using PRUNStatsCommon.Corporations;
 using PRUNStatsCommon.Planets;
 using PRUNStatsCommon.Users;

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace PRUNStatsCommon.Companies
+namespace PRUNStatsCommon.Companies.DTOs
 {
     public class CompanyDto
     {

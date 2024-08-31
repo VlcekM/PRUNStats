@@ -1,4 +1,4 @@
-﻿using PRUNStatsCommon.Companies;
+﻿using PRUNStatsCommon.Companies.Models;
 using PRUNStatsCommon.Planets;
 using System.ComponentModel.DataAnnotations.Schema;
 

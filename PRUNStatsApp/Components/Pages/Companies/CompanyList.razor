@@ -1,0 +1,160 @@
+﻿@using PRUNStatsCommon.Companies.RowItems
+@using PRUNStatsCommon.Companies.Services
+@using PRUNStatsCommon
+@using Microsoft.EntityFrameworkCore
+@using PRUNStatsCommon.Companies.Models
+@attribute [Route(RouteConstants.CompanyList)]
+@inject IDbContextFactory<StatsContext> _contextFactory
+@inject NavigationManager _navigationManager
+
+<PageTitle>Companies - PRUNStats</PageTitle>
+
+<MudStack>
+    <MudTabs Elevation="2" KeepPanelsAlive>
+        <MudTabPanel Text="Basic Filters" Icon="@Icons.Material.Filled.FilterAlt">
+            <MudStack 
+                    Wrap="Wrap.Wrap"
+                    Row
+                    Class="pa-2 flex-grow-0 flex-shrink-0 mud-background-gray"
+                    StretchItems="StretchItems.Middle"
+                    AlignItems="AlignItems.Center">
+
+                <MudTextField T="string"
+                                Label="Company code or name"
+                                ValueChanged="@(s => OnCompanyFilterChanged(s))"
+                                Variant="Variant.Outlined"
+                                AdornmentColor="Color.Tertiary"
+                                Adornment="Adornment.End"
+                                AdornmentIcon="@Icons.Material.Filled.Search">
+                </MudTextField>
+
+                <MudChipSet
+                            T="Faction"
+                            SelectedValues="DisplayedFactions"
+                            SelectedValuesChanged="@(s => OnFactionFilterChanged(s))"
+                            SelectionMode="SelectionMode.MultiSelection"
+                            Variant="Variant.Outlined"
+                            CheckMark>
+
+                    <MudChip Value="@Faction.AntaresInitiative" Default="true"
+                                Style=@(DisplayedFactions.Contains(Faction.AntaresInitiative)
+                                ? "border-color: #F4511E; background-color: #F4511E11;"
+                                : string.Empty)>
+                        Antares Initiative
+                    </MudChip>
+                    <MudChip Value="@Faction.CastilloItoMercantile" Default="true"
+                                Style=@(DisplayedFactions.Contains(Faction.CastilloItoMercantile)
+                                ? "border-color: #E10909; background-color: #E1090911;"
+                                : string.Empty)>
+                        Castillo-Ito Mercantile
+                    </MudChip>
+                    <MudChip Value="@Faction.InsitorCooperative" Default="true"
+                                Style=@(DisplayedFactions.Contains(Faction.InsitorCooperative)
+                                ? "border-color: #009920; background-color: #00992011;"
+                                : string.Empty)>
+                        Insitor Cooperative
+                    </MudChip>
+                    <MudChip Value="@Faction.NEOCharterExploration" Default="true"
+                                Style=@(DisplayedFactions.Contains(Faction.NEOCharterExploration)
+                                ? "border-color: #F4C626; background-color: #F4C62611;"
+                                : string.Empty)>
+                        NEO Charter Exploration
+                    </MudChip>
+
+                </MudChipSet>
+
+                <MudSpacer />
+
+            </MudStack>
+        </MudTabPanel>
+        <MudTabPanel Text="Advanced Filters">
+            <MudStack Row
+                      Wrap="Wrap.Wrap"
+                      Class="pa-2 flex-grow-0 flex-shrink-0 mud-background-gray"
+                      StretchItems="StretchItems.Middle"
+                      AlignItems="AlignItems.Center">
+
+                <MudTextField T="string"
+                              Label="Player"
+                              ValueChanged="@(s => OnPlayerFilterChanged(s))"
+                              Variant="Variant.Outlined"
+                              AdornmentColor="Color.Tertiary"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Person">
+                </MudTextField>
+
+                <MudTextField T="string"
+                              Label="Corporation"
+                              ValueChanged="@(s => OnCorporationFilterChanged(s))"
+                              Variant="Variant.Outlined"
+                              AdornmentColor="Color.Tertiary"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.CorporateFare">
+                </MudTextField>
+
+                <MudTextField T="string"
+                              Label="Base on planet"
+                              ValueChanged="@(s => OnPlanetFilterChanged(s))"
+                              Variant="Variant.Outlined"
+                              AdornmentColor="Color.Tertiary"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Factory"
+                >
+                </MudTextField>
+
+            </MudStack>
+        </MudTabPanel>
+    </MudTabs>
+
+    <MudDataGrid
+        @ref="DataGrid"
+        T="CompanyRowItem"
+        ServerData="ServerReloadAsync" 
+        Class="mud-background-gray mud-height-full"
+        Dense
+        FixedFooter
+        FixedHeader
+        RowClass="cursor-pointer"
+        Hover
+        RowClick="OnRowClicked"
+        ColumnResizeMode="ResizeMode.Column"
+        Height="640px">
+        <Columns>
+            <PropertyColumn Property="x => x.Code" Title="Code" Resizable="false" />
+            <PropertyColumn Property="x => x.Name" Title="Name" HeaderStyle="min-width:15em;"/>
+            <PropertyColumn Property="x => x.UserName" Title="Player" HeaderStyle="min-width:15em;" />
+            <TemplateColumn Property="x => x.FactionText" Title="Faction" Sortable="false">
+                <CellTemplate>
+                    <MudStack Row>
+                        @switch (context.Item.Faction)
+                        {
+                            case Faction.AntaresInitiative:
+                                <MudImage Width="20" Height="20" Src="images\faction_antares_initiative.png" />
+                                break;
+                            case Faction.CastilloItoMercantile:
+                                <MudImage Width="20" Height="20" Src="images\faction_castillo_ito.png" />
+                                break;
+                            case Faction.ExodusCouncil:
+                                <MudImage Width="20" Height="20" Src="images\faction_exodus_council.png" />
+                                break;
+                            case Faction.InsitorCooperative:
+                                <MudImage Width="20" Height="20" Src="images\faction_insitor_cooperative.png" />
+                                break;
+                            case Faction.NEOCharterExploration:
+                                <MudImage Width="20" Height="20" Src="images\faction_neo_charter_exploration.png" />
+                                break;
+                            default:
+                                break;
+                        }
+                        <MudText Typo="Typo.inherit">@context.Item.FactionText</MudText>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.CorporationName" Title="Corporation"/>
+            <PropertyColumn Property="x => x.BasesOnPlanetsText" Title="Bases" Sortable="false" />
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager PageSizeOptions="[100, 250, 1000]" T="CompanyRowItem" />
+        </PagerContent>
+    </MudDataGrid>
+</MudStack>

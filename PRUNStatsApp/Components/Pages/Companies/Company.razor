@@ -1,0 +1,9 @@
+﻿@using PRUNStatsCommon
+@using Microsoft.EntityFrameworkCore
+@using PRUNStatsCommon.Companies.Services
+@attribute [Route(RouteConstants.Company + "{companyId:guid}")]
+@inject IDbContextFactory<StatsContext> _contextFactory
+
+<PageTitle>@LoadedCompanyName - PRUNStats</PageTitle>
+
+<h3>@LoadedCompany?.CompanyName</h3>

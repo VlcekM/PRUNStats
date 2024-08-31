@@ -9,7 +9,9 @@
 <MudLayout>
     <MudAppBar Elevation="0">
         <MudImage Src="images\logo_500px.png" Width="40" Height="40" />
-        <MudText Typo="Typo.h5" Class="ml-3 shades-text text-white">Prosperous Universe Statistics</MudText>
+        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            <MudText Typo="Typo.h5" Class="ml-3 shades-text text-white">Prosperous Universe Statistics</MudText>
+        </MudHidden>
         <MudToolBar>
             <MudButton Href="@RouteConstants.Home"
                        Color="Color.Inherit" 
@@ -22,10 +24,10 @@
                     Style="text-transform: none;"
                     Variant="Variant.Text"
                     Class="@GetActiveClass(RouteConstants.CompanyList)"
-            >Company list</MudButton>
+            >Companies</MudButton>
         </MudToolBar>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton Href="" Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
     <MudMainContent Class="mt-16 pa-4">
         @Body
@@ -44,7 +46,11 @@
 
     private string GetActiveClass(string href)
     {
-        return _navigationManager.Uri.EndsWith(href) ? "mud-chip-text mud-chip-color-secondary mx-1 px-3" : "mx-1 px-3";
+        var active = "mud-chip-text mud-chip-color-secondary mx-1 px-3";
+        var inactive = "mx-1 px-3";
+
+        if (href == "/") return _navigationManager.Uri == _navigationManager.BaseUri ? active : inactive;
+        return _navigationManager.Uri.Contains(href) ? active : inactive;
     }
 
     protected override void OnInitialized()
@@ -58,25 +64,25 @@
         };
     }
 
-    private readonly PaletteDark _darkPalette = new()
+   private readonly PaletteDark _darkPalette = new()
     {
         Primary = "#3fa2de",
         Secondary = "#f7a600",
-        Tertiary = "#f7a600",
-        Surface = "#222222cc",
+        Tertiary = "#bbbbbb",
+        Surface = "#333333",
         Background = "#222222",
-        BackgroundGray = "#151521",
-        AppbarText = "#92929f",
+        BackgroundGray = "#2A2A2A",
+        AppbarText = "#aaaaaa",
         AppbarBackground = "#1E1E1Ecc",
         DrawerBackground = "#1E1E1Ecc",
-        ActionDefault = "#74718e",
+        ActionDefault = "#aaaaaa",
         ActionDisabled = "#9999994d",
         ActionDisabledBackground = "#605f6d4d",
-        TextPrimary = "#b2b0bf",
-        TextSecondary = "#f7a600",
+        TextPrimary = "#bbbbbb",
+        TextSecondary = "#bbbbbb",
         TextDisabled = "#ffffff33",
-        DrawerIcon = "#92929f",
-        DrawerText = "#92929f",
+        DrawerIcon = "#aaaaaa",
+        DrawerText = "#aaaaaa",
         GrayLight = "#2a2833",
         GrayLighter = "#1e1e2d",
         Info = "#4a86ff",
@@ -84,7 +90,7 @@
         Warning = "#ffb545",
         Error = "#ff3f5f",
         LinesDefault = "#33323e",
-        TableLines = "#33323e",
+        TableLines = "#444444",
         Divider = "#292838",
         OverlayLight = "#1e1e2d80",
     };

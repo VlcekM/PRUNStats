@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRUNStatsApp", "PRUNStatsApp\PRUNStatsApp.csproj", "{1FEDF417-EB30-4D42-8DF7-3F50A640B7AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRUNStatsApp", "PRUNStatsApp\PRUNStatsApp.csproj", "{1FEDF417-EB30-4D42-8DF7-3F50A640B7AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRUNStatsCommon", "PRUNStatsCommon\PRUNStatsCommon.csproj", "{785C3F15-825B-4200-93AE-4DADBA7F1B19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRUNStatsCommon", "PRUNStatsCommon\PRUNStatsCommon.csproj", "{785C3F15-825B-4200-93AE-4DADBA7F1B19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRUNStatsSynchronizer", "PRUNStatsSynchronizer\PRUNStatsSynchronizer.csproj", "{92286781-98D7-487F-9DF3-E939086E3E16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PRUNStatsSynchronizer", "PRUNStatsSynchronizer\PRUNStatsSynchronizer.csproj", "{92286781-98D7-487F-9DF3-E939086E3E16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

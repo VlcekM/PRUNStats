@@ -4,7 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PRUNStatsCommon;
 using PRUNStatsCommon.Bases;
-using PRUNStatsCommon.Companies;
+using PRUNStatsCommon.Companies.DTOs;
+using PRUNStatsCommon.Companies.Models;
 using PRUNStatsCommon.Corporations;
 using PRUNStatsCommon.Planets;
 using PRUNStatsCommon.Users;
@@ -14,6 +15,23 @@ namespace PRUNStatsSynchronizer
     public class FIOSynchronizer(IConfiguration _configuration, IHttpClientFactory _httpClientFactory, StatsContext _statsContext)
     {
         public async Task SynchronizeAsync()
+        {
+            await SynchronizeCompaniesAsync();
+            Console.WriteLine("Done!");
+        }
+
+        private async Task<List<CompanyDto>> GetCompanyDTOsAsync()
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["FIOAPIURL"]!);
+
+            return await client.GetFromJsonAsync<List<CompanyDto>>("/company/all") ?? [];
+        }
+
+        /// <summary>
+        /// Syncs planets, companies, users, corporations and bases from FIORest
+        /// </summary>
+        private async Task SynchronizeCompaniesAsync()
         {
             Console.WriteLine("Fetching companies from FIORest...");
             var companyDtos = await GetCompanyDTOsAsync();
@@ -141,8 +159,8 @@ namespace PRUNStatsSynchronizer
 
                     //handle base create/update
                     var baseModel = await _statsContext.Bases
-                        .FirstOrDefaultAsync(b => b.Planet.PRGUID == planet.PRGUID && b.Company.PRGUID == company.PRGUID) 
-                    ?? 
+                        .FirstOrDefaultAsync(b => b.Planet.PRGUID == planet.PRGUID && b.Company.PRGUID == company.PRGUID)
+                    ??
                     new BaseModel
                     {
                         Planet = planet,
@@ -152,21 +170,12 @@ namespace PRUNStatsSynchronizer
                     };
                     _statsContext.Bases.Update(baseModel);
                 }
-                
+
             }
 
             Console.WriteLine("Saving bases to db...");
             await _statsContext.SaveChangesAsync();
 
-            Console.WriteLine("Done!");
-        }
-
-        private async Task<List<CompanyDto>> GetCompanyDTOsAsync()
-        {
-            var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["FIOAPIURL"]!);
-
-            return await client.GetFromJsonAsync<List<CompanyDto>>("/company/all") ?? [];
         }
     }
 }

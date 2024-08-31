@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using PRUNStatsCommon.Companies;
+using PRUNStatsCommon.Companies.Models;
 
 namespace PRUNStatsCommon.Corporations
 {
