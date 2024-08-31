@@ -23,9 +23,9 @@ namespace PRUNStatsCommon.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CorporationName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CorporationCode = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
-                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FirstImportedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -41,9 +41,9 @@ namespace PRUNStatsCommon.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NaturalId = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FirstImportedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -58,9 +58,9 @@ namespace PRUNStatsCommon.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FirstImportedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,9 +79,9 @@ namespace PRUNStatsCommon.Migrations
                     CompanyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CompanyCode = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
                     Faction = table.Column<int>(type: "int", nullable: true),
-                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FirstImportedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,7 +110,6 @@ namespace PRUNStatsCommon.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CompanyId = table.Column<int>(type: "int", nullable: false),
                     PlanetId = table.Column<int>(type: "int", nullable: false),
-                    PRGUID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FirstImportedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdatedAtUTC = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

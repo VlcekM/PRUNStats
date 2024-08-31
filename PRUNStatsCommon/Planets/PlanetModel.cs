@@ -5,7 +5,7 @@ using PRUNStatsCommon.Bases;
 namespace PRUNStatsCommon.Planets
 {
     [Table("Planets", Schema = "prun")]
-    public class PlanetModel : EntityModelBase
+    public class PlanetModel : EntityModelFullBase
     {
         [MaxLength(10)]
         public required string NaturalId { get; set; }

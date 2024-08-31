@@ -39,9 +39,6 @@ namespace PRUNStatsCommon.Migrations
                     b.Property<DateTime>("LastUpdatedAtUTC")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("PRGUID")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("PlanetId")
                         .HasColumnType("int");
 

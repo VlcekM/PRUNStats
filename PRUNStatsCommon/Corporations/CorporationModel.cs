@@ -5,7 +5,7 @@ using PRUNStatsCommon.Companies;
 namespace PRUNStatsCommon.Corporations
 {
     [Table("Corporations", Schema = "prun")]
-    public class CorporationModel : EntityModelBase
+    public class CorporationModel : EntityModelFullBase
     {
         [MaxLength(100)]
         public required string CorporationName { get; set; }

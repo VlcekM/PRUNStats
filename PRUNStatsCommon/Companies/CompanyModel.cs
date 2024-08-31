@@ -7,7 +7,7 @@ using PRUNStatsCommon.Users;
 namespace PRUNStatsCommon.Companies
 {
     [Table("Companies", Schema = "prun")]
-    public class CompanyModel : EntityModelBase
+    public class CompanyModel : EntityModelFullBase
     {
         public required UserModel User { get; set; }
 

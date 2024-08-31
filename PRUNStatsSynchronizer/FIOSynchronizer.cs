@@ -22,12 +22,15 @@ namespace PRUNStatsSynchronizer
 
             Console.WriteLine("Parsing DTOs...");
             //now deconstruct the DTOs
+
+            var progress = 0;
             foreach (var companyDto in companyDtos)
             {
                 //handle user create/update
                 var user = await _statsContext.Users.FirstOrDefaultAsync(u => u.PRGUID == companyDto.UserId) ?? new UserModel
                 {
                     Username = companyDto.UserName,
+                    PRGUID = companyDto.UserId,
                     FirstImportedAtUTC = now,
                     LastUpdatedAtUTC = now
                 };
@@ -41,6 +44,7 @@ namespace PRUNStatsSynchronizer
                     {
                         CorporationCode = companyDto.CorporationCode!,
                         CorporationName = companyDto.CorporationName!,
+                        PRGUID = companyDto.CorporationId!,
                         FirstImportedAtUTC = now,
                         LastUpdatedAtUTC = now
                     };
@@ -64,6 +68,7 @@ namespace PRUNStatsSynchronizer
                                       {
                                           CompanyCode = companyDto.CompanyCode,
                                           CompanyName = companyDto.CompanyName,
+                                          PRGUID = companyDto.CompanyId,
                                           Corporation = corporation,
                                           Faction = faction,
                                           User = user,
@@ -78,6 +83,7 @@ namespace PRUNStatsSynchronizer
                     {
                         Name = planetDto.PlanetName,
                         NaturalId = planetDto.PlanetNaturalId,
+                        PRGUID = planetDto.PlanetId,
                         FirstImportedAtUTC = now,
                         LastUpdatedAtUTC = now
                     };
@@ -92,6 +98,8 @@ namespace PRUNStatsSynchronizer
                         FirstImportedAtUTC = now,
                         LastUpdatedAtUTC = now
                     };
+
+                    if (company.Bases.All(b => b.Planet.PRGUID != planet.PRGUID)) company.Bases.Add(planetBase);
                 }
 
                 user.LastUpdatedAtUTC = now;
@@ -103,7 +111,10 @@ namespace PRUNStatsSynchronizer
                     b.Planet.LastUpdatedAtUTC = now;
                 }
 
-                _statsContext.Update(user);
+                _statsContext.Companies.Update(company);
+
+                progress++;
+                Console.WriteLine($"Parsed {progress} / {companyDtos.Count}");
             }
 
             Console.WriteLine("Saving changes to db...");

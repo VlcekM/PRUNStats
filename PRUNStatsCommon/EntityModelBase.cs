@@ -7,8 +7,6 @@ namespace PRUNStatsCommon
         [Key]
         public int Id { get; set; }
 
-        public Guid? PRGUID { get; set; }
-
         public required DateTime FirstImportedAtUTC { get; set; }
         public required DateTime LastUpdatedAtUTC { get; set; }
     }
