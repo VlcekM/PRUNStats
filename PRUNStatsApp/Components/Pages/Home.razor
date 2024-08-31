@@ -1,9 +1,22 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using PRUNStatsCommon
+@using PRUNStatsCommon.Bases
+@using PRUNStatsCommon.Planets
 @attribute [Route(RouteConstants.Home)]
 @inject IDbContextFactory<StatsContext> _contextFactory
 
 <PageTitle>PRUNStats</PageTitle>
+
+<style>
+    body {
+        background-image: url(../images/map.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    .shadowed {
+        text-shadow: 0 0 1px black;
+    }
+</style>
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudStack
@@ -14,59 +27,104 @@
         AlignItems="AlignItems.Center"
     >
         
-        <MudText Typo="Typo.h2" Align="Align.Center">
+        <MudText Class="shadowed shades-text text-white" Typo="Typo.h2" Align="Align.Center">
             Welcome to PRUNStats
         </MudText>
-        <MudText Typo="Typo.subtitle1" Align="Align.Center">
-            Providing insights into the economy of Prosperous Universe since 2024
+        <MudText Class="shadowed" Typo="Typo.subtitle1" Align="Align.Center">
+            Providing insights into the economy of a Prosperous Universe since 2024.
         </MudText>
 
         <br />
 
-        <MudText Typo="Typo.h4" Align="Align.Center">Currently tracking</MudText>
-        <br />
-        <MudStack Row Wrap="Wrap.Wrap" Spacing="5" AlignItems="AlignItems.Center" Justify="Justify.Center">
+        @if (LoadedData)
+        {
+            <MudText Class="shadowed shades-text text-white" Typo="Typo.h4" Align="Align.Center">Currently tracking</MudText>
 
-            <MudPaper Class="pa-3">
-                exactly
-                <MudText Inline Typo="Typo.h6" Color="Color.Secondary" Inline>@TrackedCompanies.ToString("N0")</MudText>
-                <MudText Inline Typo="Typo.h6">companies</MudText>
-            </MudPaper>
+            <br />
 
-            <MudPaper Class="pa-3">
-                with
-                <MudText Inline Typo="Typo.h6" Color="Color.Secondary" Inline>@TrackedBases.ToString("N0")</MudText>
-                <MudText Inline Typo="Typo.h6">bases</MudText>
-            </MudPaper>
+            <MudStack Row Wrap="Wrap.Wrap" Spacing="5" AlignItems="AlignItems.Center" Justify="Justify.Center">
 
-            <MudPaper Class="pa-3">
-                on
-                <MudText Inline Typo="Typo.h6" Color="Color.Secondary" Inline>@TrackedPlanets.ToString("N0")</MudText>
-                <MudText Inline Typo="Typo.h6">planets</MudText>
-            </MudPaper>
+                <MudPaper Class="pa-3">
+                    exactly
+                    <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedCompanies.ToString("N0")</MudText>
+                    <MudText Inline Typo="Typo.h6">companies</MudText>
+                </MudPaper>
 
-            <MudPaper Class="pa-3">
-                for
-                <MudText Inline Typo="Typo.h6" Color="Color.Secondary" Inline>@TrackedPlayers.ToString("N0")</MudText>
-                <MudText Inline Typo="Typo.h6">players</MudText>
-            </MudPaper>
+                <MudPaper Class="pa-3">
+                    with
+                    <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedBases.ToString("N0")</MudText>
+                    <MudText Inline Typo="Typo.h6">bases</MudText>
+                </MudPaper>
 
-            <MudPaper Class="pa-3">
-                in
-                <MudText Inline Typo="Typo.h6" Color="Color.Secondary" Inline>@TrackedCorporations.ToString("N0")</MudText>
-                <MudText Inline Typo="Typo.h6">corporations</MudText>
-            </MudPaper>
+                <MudPaper Class="pa-3">
+                    on
+                    <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedPlanets.ToString("N0")</MudText>
+                    <MudText Inline Typo="Typo.h6">planets</MudText>
+                </MudPaper>
 
-        </MudStack>
+                <MudPaper Class="pa-3">
+                    for
+                    <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedPlayers.ToString("N0")</MudText>
+                    <MudText Inline Typo="Typo.h6">players</MudText>
+                </MudPaper>
 
-        <MudSpacer />
+                <MudPaper Class="pa-3">
+                    in
+                    <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedCorporations.ToString("N0")</MudText>
+                    <MudText Inline Typo="Typo.h6">corporations</MudText>
+                </MudPaper>
 
-        <MudText Typo="Typo.subtitle2">
-            <MudSpacer></MudSpacer>
-            Made by _sashkaa | Powered by the amazing 
-            <MudLink Href="https://fnar.net/page/projects/" Target="_blank" Typo="Typo.body2" Color="Color.Primary">
+            </MudStack>
+
+            <br />
+
+            <MudStack Row Wrap="Wrap.Wrap" Spacing="5" AlignItems="AlignItems.Stretch" Justify="Justify.Center">
+
+                <MudPaper Class="pa-4">
+                    <MudText Typo="Typo.h6" Align="Align.Center">Faction allegiance</MudText>
+                    <MudChart
+                        Width="300px"
+                        Height="300px"
+                        ChartType="ChartType.Donut"
+                        InputData="CompanyFactionDistrib"
+                        InputLabels="FactionNames"
+                        ChartOptions="FactionChartOptions"/>
+                </MudPaper>
+
+                <MudPaper Class="pa-4">
+                    <MudText Typo="Typo.h6" Align="Align.Center">Most popular planets</MudText>
+                    <ApexCharts.ApexChart 
+                        TItem="PlanetModel" 
+                        Width="@("300px")" 
+                        Height="@("100%")"
+                        Options="PopularPlanetsOptions">
+                        <ApexCharts.ApexPointSeries 
+                            TItem="PlanetModel"
+                            Items="PopularPlanets"
+                            Name="Base Count"
+                            XValue="@(e => string.IsNullOrWhiteSpace(e.Name) ? e.NaturalId : e.Name)"
+                            YValue="@(e => e.Bases.Count)"
+                            SeriesType="ApexCharts.SeriesType.Bar"
+                        />
+                    </ApexCharts.ApexChart>
+                </MudPaper>
+
+            </MudStack>
+
+        }
+        else
+        {
+            <MudProgressCircular Indeterminate Size="Size.Large" Color="Color.Secondary" />
+        }
+
+        <br/>
+
+        <MudText Inline Class="shadowed">From _sashkaa with love</MudText>
+        <MudElement>
+            <MudText Inline Class="shadowed">Powered by the amazing</MudText>
+            <MudLink Class="shadowed" Href="https://fnar.net/page/projects/" Target="_blank" Typo="Typo.body1" Color="Color.Primary">
                 FIORest API
             </MudLink>
-        </MudText>
+        </MudElement>
     </MudStack>
 </MudContainer>
