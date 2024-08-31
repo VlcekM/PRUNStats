@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PUStatsCommon\PRUNStatsCommon.csproj" />
+    <ProjectReference Include="..\PRUNStatsCommon\PRUNStatsCommon.csproj" />
   </ItemGroup>
 
 </Project>
