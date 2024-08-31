@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
-using PRUNStatsCommon.Planets;
 
 namespace PRUNStatsCommon.Companies
 {
     public class CompanyDto
     {
-        public List<PlanetDto> Planets { get; set; } = [];
+        public List<CompanyPlanetBaseDto> Planets { get; set; } = [];
 
         [JsonConverter(typeof(JsonConverterGuid))]
         public Guid? UserDataId { get; set; }

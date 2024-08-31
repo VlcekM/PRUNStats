@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PRUNStatsCommon;
@@ -24,9 +25,41 @@ namespace PRUNStatsSynchronizer
             //now deconstruct the DTOs
 
             var progress = 0;
+            Console.WriteLine("Parsing planets...");
+            var planets = companyDtos
+                .SelectMany(c => c.Planets ?? [])
+                .DistinctBy(c => c.PlanetId)
+                .ToList();
+
+            foreach (var planetDto in planets)
+            {
+                progress++;
+                Console.WriteLine($"Parsing planet {progress} / {planets.Count} ({planetDto.PlanetNaturalId})");
+
+                var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
+                {
+                    Name = planetDto.PlanetName,
+                    NaturalId = planetDto.PlanetNaturalId,
+                    PRGUID = planetDto.PlanetId,
+                    FirstImportedAtUTC = now,
+                    LastUpdatedAtUTC = now
+                };
+
+                _statsContext.Update(planet);
+            }
+
+            Console.WriteLine("Saving planets to db...");
+            await _statsContext.SaveChangesAsync();
+
+            progress = 0;
             foreach (var companyDto in companyDtos)
             {
+                progress++;
+                Console.WriteLine($"Parsing company {progress} / {companyDtos.Count} ({companyDto.CompanyCode})");
+
                 if (string.IsNullOrWhiteSpace(companyDto.UserName)) continue; //skip companies without a user
+                if (string.IsNullOrWhiteSpace(companyDto.CompanyName)) continue; //skip companies without a name
+                if (string.IsNullOrWhiteSpace(companyDto.CompanyCode)) continue; //skip companies without a name
 
                 //handle user create/update
                 var user = await _statsContext.Users.FirstOrDefaultAsync(u => u.PRGUID == companyDto.UserId) ?? new UserModel
@@ -78,49 +111,51 @@ namespace PRUNStatsSynchronizer
                                           LastUpdatedAtUTC = now
                                       };
 
-                ////handle planet create/update
-                //foreach (var planetDto in companyDto.Planets)
-                //{
-                //    var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
-                //    {
-                //        Name = planetDto.PlanetName,
-                //        NaturalId = planetDto.PlanetNaturalId,
-                //        PRGUID = planetDto.PlanetId,
-                //        FirstImportedAtUTC = now,
-                //        LastUpdatedAtUTC = now
-                //    };
-
-                //    //now that we got the planet, let's handle the base
-                //    var planetBase = await _statsContext.Bases
-                //        .FirstOrDefaultAsync(b => b.Company == company && b.Planet == planet)
-                //    ?? new BaseModel
-                //    {
-                //        Planet = planet,
-                //        Company = company,
-                //        FirstImportedAtUTC = now,
-                //        LastUpdatedAtUTC = now
-                //    };
-
-                //    if (company.Bases.All(b => b.Planet.PRGUID != planet.PRGUID)) company.Bases.Add(planetBase);
-                //}
-
                 user.LastUpdatedAtUTC = now;
                 if (corporation is not null) corporation.LastUpdatedAtUTC = now;
                 company.LastUpdatedAtUTC = now;
-                //foreach(var b in company.Bases)
-                //{
-                //    b.LastUpdatedAtUTC = now;
-                //    b.Planet.LastUpdatedAtUTC = now;
-                //}
 
                 _statsContext.Companies.Update(company);
-
-                progress++;
-                Console.WriteLine($"Parsed {progress} / {companyDtos.Count}");
             }
 
-            Console.WriteLine("Saving changes to db...");
-            //now save changes
+            Console.WriteLine("Saving companies to db...");
+            await _statsContext.SaveChangesAsync();
+
+            Console.WriteLine("Parsing bases...");
+
+            progress = 0;
+            foreach (var cDto in companyDtos)
+            {
+                progress++;
+                Console.WriteLine($"Parsing company bases {progress} / {companyDtos.Count} ({cDto.CompanyCode})");
+                //for each base
+                foreach (var b in cDto.Planets)
+                {
+                    //get planet
+                    var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == b.PlanetId);
+
+                    //get company
+                    var company = await _statsContext.Companies.FirstOrDefaultAsync(c => c.PRGUID == cDto.CompanyId);
+
+                    if (planet is null || company is null) continue; //skip if planet or company is not found (should not happen)
+
+                    //handle base create/update
+                    var baseModel = await _statsContext.Bases
+                        .FirstOrDefaultAsync(b => b.Planet.PRGUID == planet.PRGUID && b.Company.PRGUID == company.PRGUID) 
+                    ?? 
+                    new BaseModel
+                    {
+                        Planet = planet,
+                        Company = company,
+                        FirstImportedAtUTC = now,
+                        LastUpdatedAtUTC = now
+                    };
+                    _statsContext.Bases.Update(baseModel);
+                }
+                
+            }
+
+            Console.WriteLine("Saving bases to db...");
             await _statsContext.SaveChangesAsync();
 
             Console.WriteLine("Done!");
@@ -128,54 +163,10 @@ namespace PRUNStatsSynchronizer
 
         private async Task<List<CompanyDto>> GetCompanyDTOsAsync()
         {
-            //TEMP CODE UNTIL THE /COMPANY/ALL ENDPOINT IS IMPLEMENTED IN FIORest
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["FIOAPIURL"]!);
 
-            //get all codes for 26 letters
-            var companyCodes = new List<string>(26 * 26 + 26 * 26 * 26);
-            for (var i = 0; i < 26; i++)
-            {
-                for (var j = 0; j < 26; j++)
-                {
-                    companyCodes.Add(((char)('A' + i)).ToString() + ((char)('A' + j)).ToString());
-                }
-            }
-
-            for (var i = 0; i < 26; i++)
-            {
-                for (var j = 0; j < 26; j++)
-                {
-                    for (var k = 0; k < 26; k++)
-                    {
-                        companyCodes.Add(((char)('A' + i)).ToString() + ((char)('A' + j)).ToString() + ((char)('A' + k)).ToString());
-                    }
-                }
-            }
-
-            var companies = new List<CompanyDto>();
-
-            var progress = 0;
-            //request data for each code from FIO api
-            await Parallel.ForEachAsync(companyCodes, new ParallelOptions { MaxDegreeOfParallelism = 100 }, async (code, token) =>
-            {
-                progress++;
-                Console.WriteLine($"Fetching {progress} / {companyCodes.Count}");
-                var response = await _httpClientFactory.CreateClient().GetAsync($"https://rest.fnar.net/company/code/{code}", token);
-
-                if (!response.IsSuccessStatusCode) return;
-
-                //get stream
-                var stream = await response.Content.ReadAsStreamAsync(token);
-
-                if (stream.Length == 0) return;
-
-                //deserialize
-                var company = await JsonSerializer.DeserializeAsync<CompanyDto>(stream, cancellationToken: token);
-
-                companies.Add(company);
-
-            });
-
-            return companies;
+            return await client.GetFromJsonAsync<List<CompanyDto>>("/company/all") ?? [];
         }
     }
 }
