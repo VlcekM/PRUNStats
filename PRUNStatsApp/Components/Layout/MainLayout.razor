@@ -1,25 +1,32 @@
 ﻿@inherits LayoutComponentBase
 
+@inject NavigationManager _navigationManager
+
 <MudThemeProvider Theme="@_theme" IsDarkMode />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
     <MudAppBar Elevation="0">
-        <MudHidden Breakpoint="Breakpoint.LgAndUp">
-            <MudIconButton 
-                Icon="@Icons.Material.Filled.Menu"
-                Color="Color.Secondary"
-                Edge="Edge.Start" 
-                OnClick="@(e => DrawerToggle())" />
-        </MudHidden>
-        <MudText Typo="Typo.h5" Class="ml-3">Application</MudText>
+        <MudImage Src="images\logo_500px.png" Width="40" Height="40" />
+        <MudText Typo="Typo.h5" Class="ml-3 shades-text text-white">Prosperous Universe Statistics</MudText>
+        <MudToolBar>
+            <MudButton Href="@RouteConstants.Home"
+                       Color="Color.Inherit" 
+                       Style="text-transform: none;"
+                       Variant="Variant.Text"
+                       Class="@GetActiveClass(RouteConstants.Home)"
+            >Home</MudButton>
+            <MudButton Href="@RouteConstants.CompanyList"
+                    Color="Color.Inherit" 
+                    Style="text-transform: none;"
+                    Variant="Variant.Text"
+                    Class="@GetActiveClass(RouteConstants.CompanyList)"
+            >Company list</MudButton>
+        </MudToolBar>
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Docked" Elevation="2" Breakpoint="Breakpoint.Lg">
-        <NavMenu />
-    </MudDrawer>
     <MudMainContent Class="mt-16 pa-4">
         @Body
     </MudMainContent>
@@ -33,8 +40,12 @@
 </div>
 
 @code {
-    private bool _drawerOpen = true;
     private MudTheme? _theme = null;
+
+    private string GetActiveClass(string href)
+    {
+        return _navigationManager.Uri.EndsWith(href) ? "mud-chip-text mud-chip-color-secondary mx-1 px-3" : "mx-1 px-3";
+    }
 
     protected override void OnInitialized()
     {
@@ -47,26 +58,22 @@
         };
     }
 
-
-    private void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
     private readonly PaletteDark _darkPalette = new()
     {
-        Primary = "#7e6fff",
-        Surface = "#1e1e2d",
-        Background = "#1a1a27",
+        Primary = "#3fa2de",
+        Secondary = "#f7a600",
+        Tertiary = "#f7a600",
+        Surface = "#222222cc",
+        Background = "#222222",
         BackgroundGray = "#151521",
         AppbarText = "#92929f",
-        AppbarBackground = "rgba(26,26,39,0.8)",
-        DrawerBackground = "#1a1a27",
+        AppbarBackground = "#1E1E1Ecc",
+        DrawerBackground = "#1E1E1Ecc",
         ActionDefault = "#74718e",
         ActionDisabled = "#9999994d",
         ActionDisabledBackground = "#605f6d4d",
         TextPrimary = "#b2b0bf",
-        TextSecondary = "#92929f",
+        TextSecondary = "#f7a600",
         TextDisabled = "#ffffff33",
         DrawerIcon = "#92929f",
         DrawerText = "#92929f",

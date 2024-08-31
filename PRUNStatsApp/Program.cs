@@ -1,5 +1,4 @@
 using MudBlazor.Services;
-using PUStatsApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
