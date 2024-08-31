@@ -20,6 +20,8 @@ namespace PRUNStatsCommon.Companies.Models
 
         public Faction? Faction { get; set; }
 
+        public DateTime? LastUpdatedFIO { get; set; }
+
         [InverseProperty(nameof(BaseModel.Company))]
         public virtual ICollection<BaseModel> Bases { get; set; } = [];
     }

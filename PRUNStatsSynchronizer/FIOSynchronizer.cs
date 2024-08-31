@@ -85,7 +85,7 @@ namespace PRUNStatsSynchronizer
                     Username = companyDto.UserName,
                     PRGUID = companyDto.UserId,
                     FirstImportedAtUTC = now,
-                    LastUpdatedAtUTC = now
+                    LastUpdatedAtUTC = now,
                 };
                 user.LastUpdatedAtUTC = now;
 
@@ -126,12 +126,14 @@ namespace PRUNStatsSynchronizer
                                           Faction = faction,
                                           User = user,
                                           FirstImportedAtUTC = now,
-                                          LastUpdatedAtUTC = now
+                                          LastUpdatedAtUTC = now,
+                                          LastUpdatedFIO = companyDto.Timestamp,
                                       };
 
                 user.LastUpdatedAtUTC = now;
                 if (corporation is not null) corporation.LastUpdatedAtUTC = now;
                 company.LastUpdatedAtUTC = now;
+                company.LastUpdatedFIO = companyDto.Timestamp;
 
                 _statsContext.Companies.Update(company);
             }

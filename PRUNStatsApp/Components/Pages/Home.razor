@@ -5,18 +5,9 @@
 @attribute [Route(RouteConstants.Home)]
 @inject IDbContextFactory<StatsContext> _contextFactory
 
+
 <PageTitle>PRUNStats</PageTitle>
 
-<style>
-    body {
-        background-image: url(../images/map.png);
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-    .shadowed {
-        text-shadow: 0 0 1px black;
-    }
-</style>
 
 <MudContainer MaxWidth="MaxWidth.False">
     <MudStack
@@ -27,10 +18,10 @@
         AlignItems="AlignItems.Center"
     >
         
-        <MudText Class="shadowed shades-text text-white" Typo="Typo.h2" Align="Align.Center">
+        <MudText Class="shades-text text-white" Typo="Typo.h2" Align="Align.Center">
             Welcome to PRUNStats
         </MudText>
-        <MudText Class="shadowed" Typo="Typo.subtitle1" Align="Align.Center">
+        <MudText Typo="Typo.subtitle1" Align="Align.Center">
             Providing insights into the economy of a Prosperous Universe since 2024.
         </MudText>
 
@@ -38,7 +29,7 @@
 
         @if (LoadedData)
         {
-            <MudText Class="shadowed shades-text text-white" Typo="Typo.h4" Align="Align.Center">Currently tracking</MudText>
+            <MudText Class="shades-text text-white" Typo="Typo.h4" Align="Align.Center">Currently tracking:</MudText>
 
             <br />
 
@@ -78,6 +69,7 @@
 
             <br />
 
+            @* this should be done through a mudgrid *@
             <MudStack Row Wrap="Wrap.Wrap" Spacing="5" AlignItems="AlignItems.Stretch" Justify="Justify.Center">
 
                 <MudPaper Class="pa-4">
@@ -91,11 +83,11 @@
                         ChartOptions="FactionChartOptions"/>
                 </MudPaper>
 
-                <MudPaper Class="pa-4">
+                <MudPaper Class="pa-4" Style="min-height:300px;">
                     <MudText Typo="Typo.h6" Align="Align.Center">Most popular planets</MudText>
                     <ApexCharts.ApexChart 
                         TItem="PlanetModel" 
-                        Width="@("300px")" 
+                        Width="@("360px")" 
                         Height="@("100%")"
                         Options="PopularPlanetsOptions">
                         <ApexCharts.ApexPointSeries 
@@ -105,7 +97,7 @@
                             XValue="@(e => string.IsNullOrWhiteSpace(e.Name) ? e.NaturalId : e.Name)"
                             YValue="@(e => e.Bases.Count)"
                             SeriesType="ApexCharts.SeriesType.Bar"
-                        />
+                            Color="@("#f7a600")" />
                     </ApexCharts.ApexChart>
                 </MudPaper>
 
@@ -119,10 +111,10 @@
 
         <br/>
 
-        <MudText Inline Class="shadowed">From _sashkaa with love</MudText>
+        <MudText Inline Class="mb-n3">From _sashkaa with love</MudText>
         <MudElement>
-            <MudText Inline Class="shadowed">Powered by the amazing</MudText>
-            <MudLink Class="shadowed" Href="https://fnar.net/page/projects/" Target="_blank" Typo="Typo.body1" Color="Color.Primary">
+            <MudText Inline>Powered by the amazing</MudText>
+            <MudLink Href="https://fnar.net/page/projects/" Target="_blank" Typo="Typo.body1" Color="Color.Primary">
                 FIORest API
             </MudLink>
         </MudElement>

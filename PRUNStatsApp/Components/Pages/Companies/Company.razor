@@ -6,4 +6,19 @@
 
 <PageTitle>@LoadedCompanyName - PRUNStats</PageTitle>
 
-<h3>@LoadedCompany?.CompanyName</h3>
+<MudStack>
+    @if (LoadedCompany is null)
+    {
+        <MudSpacer/>
+        <MudProgressCircular Indeterminate Size="Size.Large" Color="Color.Secondary" />
+        <MudSpacer />
+    }
+    else
+    {
+        <MudPaper Class="pa-3">
+            <MudText Typo="Typo.h5">Code:</MudText>
+            <MudText Typo="Typo.h5">Company: @LoadedCompany.CompanyName</MudText>
+            <MudText Typo="Typo.h5">User: @LoadedCompany.CompanyName</MudText>
+        </MudPaper>
+    }
+</MudStack>

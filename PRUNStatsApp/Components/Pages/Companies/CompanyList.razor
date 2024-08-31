@@ -10,7 +10,7 @@
 <PageTitle>Companies - PRUNStats</PageTitle>
 
 <MudStack>
-    <MudTabs Elevation="2" KeepPanelsAlive>
+    <MudTabs Elevation="2" KeepPanelsAlive Rounded>
         <MudTabPanel Text="Basic Filters" Icon="@Icons.Material.Filled.FilterAlt">
             <MudStack 
                     Wrap="Wrap.Wrap"
@@ -120,9 +120,11 @@
         ColumnResizeMode="ResizeMode.Column"
         Height="625px">
         <Columns>
+
             <PropertyColumn Property="x => x.Code" Title="Code" Resizable="false" />
             <PropertyColumn Property="x => x.Name" Title="Name" HeaderStyle="min-width:15em;"/>
             <PropertyColumn Property="x => x.UserName" Title="Player" HeaderStyle="min-width:15em;" />
+
             <TemplateColumn Property="x => x.FactionText" Title="Faction" Sortable="false">
                 <CellTemplate>
                     <MudStack Row>
@@ -150,8 +152,11 @@
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>
+
             <PropertyColumn Property="x => x.CorporationName" Title="Corporation"/>
             <PropertyColumn Property="x => x.BasesOnPlanetsText" Title="Bases" Sortable="false" />
+            <PropertyColumn Property="x => x.FIOUpdateTimestamp" Title="Last FIO Update" Sortable="false" />
+
         </Columns>
         <PagerContent>
             <MudDataGridPager PageSizeOptions="[100, 250, 1000]" T="CompanyRowItem" />

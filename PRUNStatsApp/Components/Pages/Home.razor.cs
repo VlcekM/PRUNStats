@@ -106,7 +106,14 @@ namespace PRUNStatsApp.Components.Pages
                     {
                         Show = false
                     }
-                }
+                },
+                PlotOptions = new PlotOptions
+                {
+                    Bar = new PlotOptionsBar
+                    {
+                        Horizontal = true,
+                    }
+                },
             };
         }
     }
