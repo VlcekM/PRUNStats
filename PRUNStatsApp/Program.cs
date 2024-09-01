@@ -7,6 +7,7 @@ using PRUNStatsCommon.Companies.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
+    .AddEnvironmentVariables()
     .AddUserSecrets<Program>()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
