@@ -31,7 +31,7 @@ namespace PRUNStatsApp.Components.Pages
         private ApexCharts.ApexChartOptions<CompanyModel> MostBaseCompaniesOptions { get; set; }
 
 
-        private bool LoadedData { get; set; }
+        private bool LoadedData { get; set; } = false;
 
         protected override async Task OnInitializedAsync()
         {

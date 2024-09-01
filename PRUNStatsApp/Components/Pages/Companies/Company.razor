@@ -53,18 +53,18 @@
                     }
                 </MudStack>
                 <MudStack>
-                    <MudTextField @bind-Value="LoadedCompany.CompanyCode" Label="Company Code" ReadOnly="true" Variant="Variant.Filled" FullWidth />
-                    <MudTextField @bind-Value="LoadedCompany.CompanyName" Label="Company Name" ReadOnly="true" Variant="Variant.Filled" FullWidth />
-                    <MudTextField @bind-Value="LoadedCompany.LastUpdatedFIO" Label="Last FIO update" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                    <MudTextField Value="LoadedCompany.CompanyCode" Label="Company Code" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                    <MudTextField Value="LoadedCompany.CompanyName" Label="Company Name" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                    <MudTextField Value="LoadedCompany.LastUpdatedFIO" Label="Last FIO update" ReadOnly="true" Variant="Variant.Filled" FullWidth />
                 </MudStack>
                 <MudStack>
-                    <MudTextField @bind-Value="LoadedCompany.User.Username" Label="Player" ReadOnly="true" Variant="Variant.Filled" FullWidth 
+                    <MudTextField Value="LoadedCompany.User.Username" Label="Player" ReadOnly="true" Variant="Variant.Filled" FullWidth 
                         Adornment="Adornment.End"
                         AdornmentIcon="@Icons.Material.Filled.Person"/>
-                    <MudTextField @bind-Value="LoadedCompany.Corporation.CorporationName" Label="Corporation" ReadOnly="true" Variant="Variant.Filled" FullWidth
+                    <MudTextField Value="CorporationName" Label="Corporation" ReadOnly="true" Variant="Variant.Filled" FullWidth
                         Adornment="Adornment.End"
                         AdornmentIcon="@Icons.Material.Filled.CorporateFare"/>
-                    <MudTextField @bind-Value="LoadedCompany.CreatedAt" Label="Company created on" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                    <MudTextField Value="LoadedCompany.CreatedAt" Label="Company created on" ReadOnly="true" Variant="Variant.Filled" FullWidth />
                 </MudStack>
             </MudStack>
         </MudPaper>

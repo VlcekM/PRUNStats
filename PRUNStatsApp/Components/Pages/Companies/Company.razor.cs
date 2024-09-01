@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using PRUNStatsCommon.Companies.Models;
 
 namespace PRUNStatsApp.Components.Pages.Companies
@@ -13,6 +14,8 @@ namespace PRUNStatsApp.Components.Pages.Companies
 
         private string LoadedCompanyName => LoadedCompany?.CompanyName ?? "Loading...";
 
+        private string CorporationName { get; set; } = string.Empty;
+
         protected override async Task OnInitializedAsync()
         {
             //get the company with the ID
@@ -25,6 +28,8 @@ namespace PRUNStatsApp.Components.Pages.Companies
                 .Include(x => x.Corporation)
                 .AsSplitQuery()
                 .FirstOrDefaultAsync(x => x.PRGUID == CompanyId);
+
+            CorporationName = LoadedCompany?.Corporation?.CorporationName ?? string.Empty;
         }
     }
 }
