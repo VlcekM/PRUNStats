@@ -18,6 +18,12 @@ namespace PRUNStatsApp.Components.Pages.Companies
             //get the company with the ID
             await using var ctxt =  await _contextFactory.CreateDbContextAsync();
             LoadedCompany = await ctxt.Companies
+                .AsNoTracking()
+                .Include(x => x.User)
+                .Include(x => x.Bases)
+                .ThenInclude(x => x.Planet)
+                .Include(x => x.Corporation)
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(x => x.PRGUID == CompanyId);
         }
     }

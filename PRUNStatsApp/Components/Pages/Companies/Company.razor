@@ -1,6 +1,6 @@
 ﻿@using PRUNStatsCommon
 @using Microsoft.EntityFrameworkCore
-@using PRUNStatsCommon.Companies.Services
+@using PRUNStatsCommon.Companies.Models
 @attribute [Route(RouteConstants.Company + "{companyId:guid}")]
 @inject IDbContextFactory<StatsContext> _contextFactory
 
@@ -15,10 +15,79 @@
     }
     else
     {
-        <MudPaper Class="pa-3">
-            <MudText Typo="Typo.h5">Code:</MudText>
-            <MudText Typo="Typo.h5">Company: @LoadedCompany.CompanyName</MudText>
-            <MudText Typo="Typo.h5">User: @LoadedCompany.CompanyName</MudText>
+        <MudPaper Class="pa-3" MaxWidth="1000px">
+            <MudStack Row StretchItems="StretchItems.All" Wrap="Wrap.Wrap">
+                <MudStack AlignItems="AlignItems.Center">
+                    @switch (LoadedCompany.Faction)
+                    {
+                        case Faction.AntaresInitiative:
+                            <MudImage Width="140" Height="140" Src="images\faction_antares_initiative.png" />
+                            <MudChip T="bool" Default="true" Variant="Variant.Outlined"
+                                     Style="border-color: #F4511E; background-color: #F4511E11;">
+                                Antares Initiative
+                            </MudChip>
+                            break;
+                        case Faction.CastilloItoMercantile:
+                            <MudImage Width="140" Height="140" Src="images\faction_castillo_ito.png" />
+                            <MudChip T="bool" Default="true" Variant="Variant.Outlined"
+                                     Style="border-color: #E10909; background-color: #E1090911;">
+                                Castillo-Ito Mercantile
+                            </MudChip>
+                            break;
+                        case Faction.InsitorCooperative:
+                            <MudImage Width="140" Height="140" Src="images\faction_insitor_cooperative.png" />
+                            <MudChip T="bool" Default="true" Variant="Variant.Outlined"
+                                     Style="border-color: #009920; background-color: #00992011;">
+                                Insitor Cooperative
+                            </MudChip>
+                            break;
+                        case Faction.NEOCharterExploration:
+                            <MudImage Width="140" Height="140" Src="images\faction_neo_charter_exploration.png" />
+                            <MudChip T="bool" Default="true" Variant="Variant.Outlined"
+                                     Style="border-color: #F4C626; background-color: #F4C62611;">
+                                NEO Charter Exploration
+                            </MudChip>
+                            break;
+                        default:
+                            break;
+                    }
+                </MudStack>
+                <MudStack>
+                    <MudTextField @bind-Value="LoadedCompany.CompanyCode" Label="Company Code" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                    <MudTextField @bind-Value="LoadedCompany.CompanyName" Label="Company Name" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                    <MudTextField @bind-Value="LoadedCompany.LastUpdatedFIO" Label="Last FIO update" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                </MudStack>
+                <MudStack>
+                    <MudTextField @bind-Value="LoadedCompany.User.Username" Label="Player" ReadOnly="true" Variant="Variant.Filled" FullWidth 
+                        Adornment="Adornment.End"
+                        AdornmentIcon="@Icons.Material.Filled.Person"/>
+                    <MudTextField @bind-Value="LoadedCompany.Corporation" Label="Corporation" ReadOnly="true" Variant="Variant.Filled" FullWidth
+                        Adornment="Adornment.End"
+                        AdornmentIcon="@Icons.Material.Filled.CorporateFare"/>
+                    <MudTextField @bind-Value="LoadedCompany.CreatedAt" Label="Company created on" ReadOnly="true" Variant="Variant.Filled" FullWidth />
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+        <MudPaper Class="pa-3" MaxWidth="300px">
+
+            <MudText Typo="Typo.h5">List of bases</MudText>
+            <MudTable 
+                Items="LoadedCompany.Bases" 
+                Elevation="0"
+                Class="mud-background-gray mud-height-full">
+
+                <HeaderContent>
+                    <MudTh>Planet Natural ID</MudTh>
+                    <MudTh>Planet Name</MudTh>
+                </HeaderContent>
+
+                <RowTemplate>
+                    <MudTd>@context.Planet.NaturalId</MudTd>
+                    <MudTd>@context.Planet.Name</MudTd>
+                </RowTemplate>
+
+            </MudTable>
+
         </MudPaper>
     }
 </MudStack>

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor;
 using PRUNStatsCommon;
 using PRUNStatsCommon.Companies.Models;
+using PRUNStatsCommon.Corporations;
 using PRUNStatsCommon.Planets;
 
 namespace PRUNStatsApp.Components.Pages
@@ -25,6 +26,11 @@ namespace PRUNStatsApp.Components.Pages
         private List<PlanetModel> PopularPlanets { get; set; } = [];
         private ApexCharts.ApexChartOptions<PlanetModel> PopularPlanetsOptions { get; set; }
 
+        // Most base players
+        private List<CompanyModel> MostBaseCompanies { get; set; } = [];
+        private ApexCharts.ApexChartOptions<CompanyModel> MostBaseCompaniesOptions { get; set; }
+
+
         private bool LoadedData { get; set; }
 
         protected override async Task OnInitializedAsync()
@@ -39,6 +45,8 @@ namespace PRUNStatsApp.Components.Pages
             await BuildFactionChartAsync(dbContext);
 
             await BuildPopularPlanetsAsync(dbContext);
+
+            await BuildMostBasesCompaniesAsync(dbContext);
 
             LoadedData = true;
         }
@@ -95,6 +103,42 @@ namespace PRUNStatsApp.Components.Pages
                 .ToListAsync();
 
             PopularPlanetsOptions = new ApexChartOptions<PlanetModel>
+            {
+                Theme = new Theme
+                {
+                    Mode = Mode.Dark
+                },
+                Chart = new Chart
+                {
+                    Toolbar = new Toolbar
+                    {
+                        Show = false
+                    }
+                },
+                PlotOptions = new PlotOptions
+                {
+                    Bar = new PlotOptionsBar
+                    {
+                        Horizontal = true,
+                    }
+                },
+            };
+        }
+
+        private async Task BuildMostBasesCompaniesAsync(StatsContext dbContext)
+        {
+            //only top 10 players
+            var topCompanyCount = 10;
+
+            //get the top X companies by base count
+            MostBaseCompanies = await dbContext.Companies
+                .Include(x => x.Bases)
+                .Include(x => x.User)
+                .OrderByDescending(x => x.Bases.Count)
+                .Take(topCompanyCount)
+                .ToListAsync();
+
+            MostBaseCompaniesOptions = new ApexChartOptions<CompanyModel>
             {
                 Theme = new Theme
                 {

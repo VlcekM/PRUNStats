@@ -35,6 +35,7 @@ namespace PRUNStatsCommon.Companies.RowItems
                 .Select(x => string.IsNullOrWhiteSpace(x.PlanetName) ? x.NaturalId : x.PlanetName));
 
         public DateTime? FIOUpdateTimestamp { get; set; }
+        public DateTime? CreatedOnDateTime { get; set; }
 
         public static Expression<Func<CompanyModel, CompanyRowItem>> FromModel()
         {
@@ -47,7 +48,8 @@ namespace PRUNStatsCommon.Companies.RowItems
                 Faction = x.Faction,
                 CorporationName = x.Corporation.CorporationName,
                 BasesOnPlanets = x.Bases.Select(y => new BaseOnPlanet { NaturalId = y.Planet.NaturalId, PlanetName = y.Planet.Name }).ToList(),
-                FIOUpdateTimestamp = x.LastUpdatedFIO
+                FIOUpdateTimestamp = x.LastUpdatedFIO,
+                CreatedOnDateTime = x.CreatedAt
             };
         }
 

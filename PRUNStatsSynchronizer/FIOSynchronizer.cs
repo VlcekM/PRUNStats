@@ -135,6 +135,11 @@ namespace PRUNStatsSynchronizer
                 company.LastUpdatedAtUTC = now;
                 company.LastUpdatedFIO = companyDto.Timestamp;
 
+                //handle epoch time conversion
+                DateTime? createdAt = DateTime.UnixEpoch.AddMilliseconds(companyDto.CreatedEpochMs);
+                if (createdAt?.Year == 1970) createdAt = null;
+                company.CreatedAt = createdAt;
+
                 _statsContext.Companies.Update(company);
             }
 

@@ -1,6 +1,7 @@
 ﻿@using Microsoft.EntityFrameworkCore
 @using PRUNStatsCommon
 @using PRUNStatsCommon.Bases
+@using PRUNStatsCommon.Companies.Models
 @using PRUNStatsCommon.Planets
 @attribute [Route(RouteConstants.Home)]
 @inject IDbContextFactory<StatsContext> _contextFactory
@@ -9,7 +10,7 @@
 <PageTitle>PRUNStats</PageTitle>
 
 
-<MudContainer MaxWidth="MaxWidth.False">
+<MudContainer MaxWidth="MaxWidth.Large">
     <MudStack
         Class="mud-height-full mud-width-full"
         Wrap="Wrap.Wrap"
@@ -70,38 +71,62 @@
             <br />
 
             @* this should be done through a mudgrid *@
-            <MudStack Row Wrap="Wrap.Wrap" Spacing="5" AlignItems="AlignItems.Stretch" Justify="Justify.Center">
+            <MudGrid Spacing="5" Justify="Justify.Center">
 
-                <MudPaper Class="pa-4">
-                    <MudText Typo="Typo.h6" Align="Align.Center">Faction allegiance</MudText>
-                    <MudChart
-                        Width="300px"
-                        Height="300px"
-                        ChartType="ChartType.Donut"
-                        InputData="CompanyFactionDistrib"
-                        InputLabels="FactionNames"
-                        ChartOptions="FactionChartOptions"/>
-                </MudPaper>
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-4" MaxHeight="500px" MinHeight="400px">
+                        <MudText Typo="Typo.h6" Align="Align.Center">Faction allegiance</MudText>
+                        <MudChart
+                            Width="300px"
+                            Height="100%"
+                            ChartType="ChartType.Donut"
+                            InputData="CompanyFactionDistrib"
+                            InputLabels="FactionNames"
+                            ChartOptions="FactionChartOptions"/>
+                    </MudPaper>
+                </MudItem>
 
-                <MudPaper Class="pa-4" Style="min-height:300px;">
-                    <MudText Typo="Typo.h6" Align="Align.Center">Most popular planets</MudText>
-                    <ApexCharts.ApexChart 
-                        TItem="PlanetModel" 
-                        Width="@("360px")" 
-                        Height="@("100%")"
-                        Options="PopularPlanetsOptions">
-                        <ApexCharts.ApexPointSeries 
-                            TItem="PlanetModel"
-                            Items="PopularPlanets"
-                            Name="Base Count"
-                            XValue="@(e => string.IsNullOrWhiteSpace(e.Name) ? e.NaturalId : e.Name)"
-                            YValue="@(e => e.Bases.Count)"
-                            SeriesType="ApexCharts.SeriesType.Bar"
-                            Color="@("#f7a600")" />
-                    </ApexCharts.ApexChart>
-                </MudPaper>
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-4" MaxHeight="500px" MinHeight="400px">
+                        <MudText Typo="Typo.h6" Align="Align.Center">Most popular planets</MudText>
+                        <ApexCharts.ApexChart 
+                            TItem="PlanetModel" 
+                            Width="@("100%")" 
+                            Height="@("100%")"
+                            Options="PopularPlanetsOptions">
+                            <ApexCharts.ApexPointSeries 
+                                TItem="PlanetModel"
+                                Items="PopularPlanets"
+                                Name="Base Count"
+                                XValue="@(e => string.IsNullOrWhiteSpace(e.Name) ? e.NaturalId : e.Name)"
+                                YValue="@(e => e.Bases.Count)"
+                                SeriesType="ApexCharts.SeriesType.Bar"
+                                Color="@("#f7a600")" />
+                        </ApexCharts.ApexChart>
+                    </MudPaper>
+                </MudItem>
 
-            </MudStack>
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-4" MaxHeight="500px" MinHeight="400px">
+                        <MudText Typo="Typo.h6" Align="Align.Center">Playes with most bases</MudText>
+                        <ApexCharts.ApexChart 
+                            TItem="CompanyModel"           
+                            Width="@("100%")" 
+                            Height="@("100%")"
+                            Options="MostBaseCompaniesOptions">
+                            <ApexCharts.ApexPointSeries 
+                                TItem="CompanyModel"
+                                Items="MostBaseCompanies"
+                                Name="Base Count"
+                                XValue="@(e => string.IsNullOrWhiteSpace(e.User.Username) ? e.CompanyName : e.User.Username)"
+                                YValue="@(e => e.Bases.Count)"
+                                SeriesType="ApexCharts.SeriesType.Bar"
+                                                        Color="@("#3fa2de")" />
+                        </ApexCharts.ApexChart>
+                    </MudPaper>
+                </MudItem>
+
+            </MudGrid>
 
         }
         else
@@ -111,7 +136,7 @@
 
         <br/>
 
-        <MudText Inline Class="mb-n3">From _sashkaa with love</MudText>
+        <MudText Inline Class="mb-n3">VERY w.i.p. | From _sashkaa with love</MudText>
         <MudElement>
             <MudText Inline>Powered by the amazing</MudText>
             <MudLink Href="https://fnar.net/page/projects/" Target="_blank" Typo="Typo.body1" Color="Color.Primary">
