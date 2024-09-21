@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PRUNStatsCommon;
 using PRUNStatsSynchronizer;
+using System.Reflection;
 
 var configuration = new ConfigurationBuilder()
-    .AddUserSecrets<Program>()
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables("PRUNStatsSynchronizer")
+    .AddUserSecrets<Program>()
     .Build();
 
 var serviceContainer = new ServiceCollection()

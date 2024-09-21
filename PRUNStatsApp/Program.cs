@@ -7,9 +7,9 @@ using PRUNStatsCommon.Companies.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
-    .AddEnvironmentVariables()
-    .AddUserSecrets<Program>()
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables("PRUNStatsApp")
+    .AddUserSecrets<Program>();
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
