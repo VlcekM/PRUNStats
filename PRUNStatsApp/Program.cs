@@ -18,10 +18,10 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddDbContextFactory<StatsContext>(options =>
+builder.Services.AddDbContext<StatsContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("StatsContext"));
-});
+}, ServiceLifetime.Transient);
 builder.Services.AddTransient<CompanyService>();
 
 var app = builder.Build();

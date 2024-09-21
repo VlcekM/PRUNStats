@@ -41,12 +41,12 @@ namespace PRUNStatsCommon.Companies.RowItems
         {
             return x => new CompanyRowItem
             {
-                PRGUID = x.PRGUID.Value,
+                PRGUID = x.PRGUID!.Value,
                 Code = x.CompanyCode,
                 Name = x.CompanyName,
                 UserName = x.User.Username,
                 Faction = x.Faction,
-                CorporationName = x.Corporation.CorporationName,
+                CorporationName = x.Corporation!.CorporationName,
                 BasesOnPlanets = x.Bases.Select(y => new BaseOnPlanet { NaturalId = y.Planet.NaturalId, PlanetName = y.Planet.Name }).ToList(),
                 FIOUpdateTimestamp = x.LastUpdatedFIO,
                 CreatedOnDateTime = x.CreatedAt

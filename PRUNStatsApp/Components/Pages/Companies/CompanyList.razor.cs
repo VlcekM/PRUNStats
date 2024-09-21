@@ -23,6 +23,7 @@ namespace PRUNStatsApp.Components.Pages.Companies
 
         /// <summary>
         /// This variable is used to prevent the filtering from being applied before the first render.
+        /// Otherwise a few weird bugs happened.
         /// </summary>
         private bool AfterFirstRender { get; set; }
 
@@ -75,9 +76,8 @@ namespace PRUNStatsApp.Components.Pages.Companies
 
         private async Task<GridData<CompanyRowItem>> ServerReloadAsync(GridState<CompanyRowItem> state)
         {
-            await using var context = await _contextFactory.CreateDbContextAsync();
 
-            var queryable = context.Companies
+            var queryable = _dbContext.Companies
                 .Where(x => x.Faction != null)
                 .Select(CompanyRowItem.FromModel())
                 .AsNoTracking();
@@ -105,17 +105,17 @@ namespace PRUNStatsApp.Components.Pages.Companies
             var result = queryable;
             if (!string.IsNullOrWhiteSpace(SearchFilter))
             {
-                result = result.Where(x => x.Code.Contains(SearchFilter) || x.Name.Contains(SearchFilter));
+                result = result.Where(x => x.Code!.Contains(SearchFilter) || x.Name!.Contains(SearchFilter));
             }
 
             if (!string.IsNullOrWhiteSpace(PlayerFilter))
             {   
-                result = result.Where(x => x.UserName.Contains(PlayerFilter));
+                result = result.Where(x => x.UserName!.Contains(PlayerFilter));
             }
 
             if (!string.IsNullOrWhiteSpace(CorporationFilter))
             {
-                result = result.Where(x => x.CorporationName.Contains(CorporationFilter));
+                result = result.Where(x => x.CorporationName!.Contains(CorporationFilter));
             }
 
             if (!string.IsNullOrWhiteSpace(PlanetFilter))

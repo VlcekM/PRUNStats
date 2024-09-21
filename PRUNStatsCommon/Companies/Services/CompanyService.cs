@@ -3,7 +3,7 @@ using PRUNStatsCommon.Companies.RowItems;
 
 namespace PRUNStatsCommon.Companies.Services
 {
-    public class CompanyService(IDbContextFactory<StatsContext> _contextFactory)
+    public class CompanyService
     {
         //public async Task<List<CompanyRowItem>> FetchCompanyRowItems()
         //{

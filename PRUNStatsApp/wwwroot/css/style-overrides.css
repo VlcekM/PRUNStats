@@ -1,0 +1,43 @@
+﻿/* Makes the apexcharts darkmode bg transparent instead of a weird grey */
+svg.apexcharts-svg {
+    background: transparent !important;
+}
+
+/* Makes the label on mudselects transparent instead of having a surface-color background*/
+.mud-input-label-outlined {
+    background: transparent !important;
+}
+
+/* Tab overrides */
+div.mud-tabs-tabbar {
+    background-color: var(--mud-palette-background);
+    color: #eee;
+    font-weight: lighter !important;
+}
+
+/*div.mud-tab-active {*/
+    /* ReSharper disable once CssNotResolved */
+    /*color: var(--mud-palette-secondary) !important;
+}*/
+
+/* Table styles */
+th.mud-table-cell {
+    background-color: var(--pr-blue) !important;
+    padding-top: 1px !important;
+    padding-bottom: 2px !important;
+}
+
+span.column-header {
+    color: #eee;
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+div.mud-table-pagination-toolbar {
+    background-color: var(--mud-palette-background);
+}
+
+div.mud-paper {
+    box-shadow: 0 0 5px #3fa2de;
+    box-shadow: 0 0 5px rgba(63, 162, 222, 0.5);
+}

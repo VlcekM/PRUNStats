@@ -1,0 +1,14 @@
+﻿html {
+    --pr-blue: #26353E;
+}
+
+body {
+    background-image: url('../images/map.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.pr-shadow {
+    box-shadow: 0 0 5px #3fa2de;
+    box-shadow: 0 0 5px rgba(63, 162, 222, 0.5);
+}

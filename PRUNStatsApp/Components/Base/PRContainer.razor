@@ -1,0 +1,30 @@
+﻿<style>
+    .pr-title
+    {
+        background-color: var(--pr-blue);
+        border-bottom: solid;
+        border-bottom-color: #2B4A5E;
+        border-bottom-width: 1px;
+        text-transform: uppercase;
+        color: #eee;
+        font-size: 1em;
+        padding: 5px 8px 5px 8px;
+    }
+
+    .pr-paper {
+        height: 100%;
+        background-color: #222222;
+    }
+</style>
+
+<MudPaper Class="pr-paper" Style="@Style">
+    <MudStack StretchItems="StretchItems.End" Class="mud-height-full" Spacing="0">
+    @if(!string.IsNullOrWhiteSpace(Title))
+    {
+        <p class="pr-title">@Title</p>
+    }
+    <div class="pa-2">
+        @ChildContent
+    </div>
+    </MudStack>
+</MudPaper>

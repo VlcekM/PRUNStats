@@ -1,4 +1,5 @@
-﻿using ApexCharts;
+﻿using System.Diagnostics;
+using ApexCharts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
@@ -7,7 +8,7 @@ using PRUNStatsCommon.Companies.Models;
 using PRUNStatsCommon.Corporations;
 using PRUNStatsCommon.Planets;
 
-namespace PRUNStatsApp.Components.Pages
+namespace PRUNStatsApp.Components.Pages.Home
 {
     public partial class Home : ComponentBase
     {
@@ -24,36 +25,38 @@ namespace PRUNStatsApp.Components.Pages
 
         // Popular Planets
         private List<PlanetModel> PopularPlanets { get; set; } = [];
-        private ApexCharts.ApexChartOptions<PlanetModel> PopularPlanetsOptions { get; set; }
+        private ApexChartOptions<PlanetModel>? PopularPlanetsOptions { get; set; }
 
         // Most base players
         private List<CompanyModel> MostBaseCompanies { get; set; } = [];
-        private ApexCharts.ApexChartOptions<CompanyModel> MostBaseCompaniesOptions { get; set; }
-
+        private ApexChartOptions<CompanyModel>? MostBaseCompaniesOptions { get; set; }
 
         private bool LoadedData { get; set; } = false;
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await using var dbContext = await _contextFactory.CreateDbContextAsync();
-            TrackedCompanies = await dbContext.Companies.CountAsync();
-            TrackedBases = await dbContext.Bases.CountAsync();
-            TrackedPlanets = await dbContext.Planets.CountAsync();
-            TrackedPlayers = await dbContext.Users.CountAsync();
-            TrackedCorporations = await dbContext.Corporations.CountAsync();
+            if (!firstRender) return;
 
-            await BuildFactionChartAsync(dbContext);
+            TrackedCompanies = await _statsContext.Companies.CountAsync();
+            TrackedBases = await _statsContext.Bases.CountAsync();
+            TrackedPlanets = await _statsContext.Planets.CountAsync();
+            TrackedPlayers = await _statsContext.Users.CountAsync();
+            TrackedCorporations = await _statsContext.Corporations.CountAsync();
 
-            await BuildPopularPlanetsAsync(dbContext);
+            await BuildFactionChartAsync(_statsContext);
 
-            await BuildMostBasesCompaniesAsync(dbContext);
+            await BuildPopularPlanetsAsync(_statsContext);
+
+            await BuildMostBasesCompaniesAsync(_statsContext);
 
             LoadedData = true;
+            StateHasChanged();
         }
 
         private async Task BuildFactionChartAsync(StatsContext dbContext)
         {
             var companyDistrib = await dbContext.Companies
+                .AsNoTracking()
                 .GroupBy(x => x.Faction)
                 .Select(x => new { Faction = x.Key, Count = x.Count() })
                 .ToListAsync();
@@ -97,6 +100,7 @@ namespace PRUNStatsApp.Components.Pages
 
             //get the top X planets by company count
             PopularPlanets = await dbContext.Planets
+                .AsNoTracking()
                 .Include(x => x.Bases)
                 .OrderByDescending(x => x.Bases.Count)
                 .Take(topPlanetCount)
@@ -113,7 +117,8 @@ namespace PRUNStatsApp.Components.Pages
                     Toolbar = new Toolbar
                     {
                         Show = false
-                    }
+                    },
+                    FontFamily = "Open Sans, sans-serif",
                 },
                 PlotOptions = new PlotOptions
                 {
@@ -132,10 +137,12 @@ namespace PRUNStatsApp.Components.Pages
 
             //get the top X companies by base count
             MostBaseCompanies = await dbContext.Companies
+                .AsNoTracking()
                 .Include(x => x.Bases)
                 .Include(x => x.User)
                 .OrderByDescending(x => x.Bases.Count)
                 .Take(topCompanyCount)
+                .AsSplitQuery()
                 .ToListAsync();
 
             MostBaseCompaniesOptions = new ApexChartOptions<CompanyModel>
@@ -149,14 +156,15 @@ namespace PRUNStatsApp.Components.Pages
                     Toolbar = new Toolbar
                     {
                         Show = false
-                    }
+                    },
+                    FontFamily = "Open Sans, sans-serif",
                 },
                 PlotOptions = new PlotOptions
                 {
                     Bar = new PlotOptionsBar
                     {
                         Horizontal = true,
-                    }
+                    },
                 },
             };
         }

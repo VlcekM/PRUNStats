@@ -16,11 +16,11 @@ namespace PRUNStatsApp.Components.Pages.Companies
 
         private string CorporationName { get; set; } = string.Empty;
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            if (!firstRender) return;
             //get the company with the ID
-            await using var ctxt =  await _contextFactory.CreateDbContextAsync();
-            LoadedCompany = await ctxt.Companies
+            LoadedCompany = await _dbContext.Companies
                 .AsNoTracking()
                 .Include(x => x.User)
                 .Include(x => x.Bases)
@@ -30,6 +30,7 @@ namespace PRUNStatsApp.Components.Pages.Companies
                 .FirstOrDefaultAsync(x => x.PRGUID == CompanyId);
 
             CorporationName = LoadedCompany?.Corporation?.CorporationName ?? string.Empty;
+            StateHasChanged();
         }
     }
 }

@@ -38,7 +38,7 @@ namespace PRUNStatsCommon
                 JsonTokenType.Null => (null, true),
                 _ => (default, false)
             };
-            parsed = p;
+            parsed = p!;
             return r;
         }
     }

@@ -9,7 +9,7 @@
 <MudLayout>
     <MudAppBar Elevation="0">
         <MudImage Src="images\logo_500px.png" Width="40" Height="40" />
-        <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <MudHidden Breakpoint="Breakpoint.SmAndDown" Hidden="false">
             <MudText Typo="Typo.h5" Class="ml-3 shades-text text-white">Prosperous Universe Statistics</MudText>
         </MudHidden>
         <MudToolBar>
@@ -27,7 +27,9 @@
             >Companies</MudButton>
         </MudToolBar>
         <MudSpacer />
-        <MudIconButton Href="https://github.com/VlcekM/PRUNStats" Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Edge="Edge.End" />
+        <MudTooltip Text="Source code">
+            <MudIconButton Href="https://github.com/VlcekM/PRUNStats" Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Edge="Edge.End" />
+        </MudTooltip>
     </MudAppBar>
     <MudMainContent Class="mt-16 pa-4">
         @Body
@@ -60,7 +62,7 @@
         _theme = new MudTheme
         {
             PaletteDark = _darkPalette,
-            Typography = new Typography()
+            Typography = new Typography
             {
                 H2 = new H2
                 {
@@ -80,9 +82,9 @@
         Primary = "#3fa2de",
         Secondary = "#f7a600",
         Tertiary = "#bbbbbb",
-        Surface = "#333333",
-        Background = "#222222",
-        BackgroundGray = "#2A2A2A",
+        Surface = "#222222",
+        Background = "#292929",
+        BackgroundGray = "#222222",
         AppbarText = "#aaaaaa",
         AppbarBackground = "#1E1E1Ecc",
         DrawerBackground = "#1E1E1Ecc",
@@ -101,7 +103,7 @@
         Warning = "#ffb545",
         Error = "#ff3f5f",
         LinesDefault = "#33323e",
-        TableLines = "#444444",
+        TableLines = "#2D2D2D",
         Divider = "#292838",
         OverlayLight = "#1e1e2d80",
     };

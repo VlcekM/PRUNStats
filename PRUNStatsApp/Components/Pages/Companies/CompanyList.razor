@@ -1,16 +1,14 @@
 ﻿@using PRUNStatsCommon.Companies.RowItems
-@using PRUNStatsCommon.Companies.Services
 @using PRUNStatsCommon
-@using Microsoft.EntityFrameworkCore
 @using PRUNStatsCommon.Companies.Models
 @attribute [Route(RouteConstants.CompanyList)]
-@inject IDbContextFactory<StatsContext> _contextFactory
+@inject StatsContext _dbContext
 @inject NavigationManager _navigationManager
 
 <PageTitle>Companies - PRUNStats</PageTitle>
 
 <MudStack>
-    <MudTabs Elevation="2" KeepPanelsAlive Rounded>
+    <MudTabs KeepPanelsAlive Rounded Class="pr-shadow">
         <MudTabPanel Text="Basic Filters" Icon="@Icons.Material.Filled.FilterAlt">
             <MudStack 
                     Wrap="Wrap.Wrap"
@@ -98,8 +96,7 @@
                               Variant="Variant.Outlined"
                               AdornmentColor="Color.Tertiary"
                               Adornment="Adornment.End"
-                              AdornmentIcon="@Icons.Material.Filled.Factory"
-                >
+                              AdornmentIcon="@Icons.Material.Filled.Factory">
                 </MudTextField>
 
             </MudStack>
@@ -110,7 +107,9 @@
         @ref="DataGrid"
         T="CompanyRowItem"
         ServerData="ServerReloadAsync" 
-        Class="mud-background-gray mud-height-full"
+        Class="mud-height-full pr-shadow"
+        Style="background-color: #222222"
+        Elevation="0"
         Dense
         FixedFooter
         FixedHeader

@@ -1,14 +1,16 @@
-﻿@using Microsoft.EntityFrameworkCore
-@using PRUNStatsCommon
-@using PRUNStatsCommon.Bases
+﻿@using PRUNStatsCommon
 @using PRUNStatsCommon.Companies.Models
 @using PRUNStatsCommon.Planets
+@using PRUNStatsApp.Components.Base
 @attribute [Route(RouteConstants.Home)]
-@inject IDbContextFactory<StatsContext> _contextFactory
 
+@inject StatsContext _statsContext
 
 <PageTitle>PRUNStats</PageTitle>
 
+<style>
+
+</style>
 
 <MudContainer MaxWidth="MaxWidth.Large">
     <MudStack
@@ -36,46 +38,44 @@
 
             <MudStack Row Wrap="Wrap.Wrap" Spacing="5" AlignItems="AlignItems.Center" Justify="Justify.Center">
 
-                <MudPaper Class="pa-3">
+                <PRContainer InternalPadding="pa-3">
                     exactly
                     <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedCompanies.ToString("N0")</MudText>
                     <MudText Inline Typo="Typo.h6">companies</MudText>
-                </MudPaper>
+                </PRContainer>
 
-                <MudPaper Class="pa-3">
+                <PRContainer InternalPadding="pa-3">
                     with
                     <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedBases.ToString("N0")</MudText>
                     <MudText Inline Typo="Typo.h6">bases</MudText>
-                </MudPaper>
+                </PRContainer>
 
-                <MudPaper Class="pa-3">
+                <PRContainer InternalPadding="pa-3">
                     on
                     <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedPlanets.ToString("N0")</MudText>
                     <MudText Inline Typo="Typo.h6">planets</MudText>
-                </MudPaper>
+                </PRContainer>
 
-                <MudPaper Class="pa-3">
+                <PRContainer InternalPadding="pa-3">
                     for
                     <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedPlayers.ToString("N0")</MudText>
                     <MudText Inline Typo="Typo.h6">players</MudText>
-                </MudPaper>
+                </PRContainer>
 
-                <MudPaper Class="pa-3">
+                <PRContainer InternalPadding="pa-3">
                     in
                     <MudText Inline Typo="Typo.h6" Color="Color.Secondary">@TrackedCorporations.ToString("N0")</MudText>
                     <MudText Inline Typo="Typo.h6">corporations</MudText>
-                </MudPaper>
+                </PRContainer>
 
             </MudStack>
 
             <br />
 
-            @* this should be done through a mudgrid *@
             <MudGrid Spacing="5" Justify="Justify.Center">
 
                 <MudItem xs="12" md="4">
-                    <MudPaper Class="pa-4" MaxHeight="500px" MinHeight="400px">
-                        <MudText Typo="Typo.h6" Align="Align.Center">Faction allegiance</MudText>
+                    <PRContainer Title="Faction allegiance" Style="max-height:450px; min-height:400px;">
                         <MudChart
                             Width="300px"
                             Height="100%"
@@ -83,12 +83,11 @@
                             InputData="CompanyFactionDistrib"
                             InputLabels="FactionNames"
                             ChartOptions="FactionChartOptions"/>
-                    </MudPaper>
+                    </PRContainer>
                 </MudItem>
 
                 <MudItem xs="12" md="4">
-                    <MudPaper Class="pa-4" MaxHeight="500px" MinHeight="400px">
-                        <MudText Typo="Typo.h6" Align="Align.Center">Most popular planets</MudText>
+                    <PRContainer Title="Most popular planets" Style="max-height:450px; min-height:400px;">
                         <ApexCharts.ApexChart 
                             TItem="PlanetModel" 
                             Width="@("100%")" 
@@ -103,12 +102,11 @@
                                 SeriesType="ApexCharts.SeriesType.Bar"
                                 Color="@("#f7a600")" />
                         </ApexCharts.ApexChart>
-                    </MudPaper>
+                    </PRContainer>
                 </MudItem>
 
                 <MudItem xs="12" md="4">
-                    <MudPaper Class="pa-4" MaxHeight="500px" MinHeight="400px">
-                        <MudText Typo="Typo.h6" Align="Align.Center">Players with most bases</MudText>
+                    <PRContainer Title="Players with most bases" Style="max-height:450px; min-height:400px;">
                         <ApexCharts.ApexChart 
                             TItem="CompanyModel"           
                             Width="@("100%")" 
@@ -123,7 +121,7 @@
                                 SeriesType="ApexCharts.SeriesType.Bar"
                                                         Color="@("#3fa2de")" />
                         </ApexCharts.ApexChart>
-                    </MudPaper>
+                    </PRContainer>
                 </MudItem>
 
             </MudGrid>
@@ -136,7 +134,7 @@
 
         <br/>
 
-        <MudText Inline Class="mb-n3">VERY w.i.p. | From _sashkaa with love</MudText>
+        <MudText Inline Class="mb-n3">From _sashkaa with love</MudText>
         <MudElement>
             <MudText Inline>Powered by the amazing</MudText>
             <MudLink Href="https://fnar.net/page/projects/" Target="_blank" Typo="Typo.body1" Color="Color.Primary">
