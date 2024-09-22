@@ -42,7 +42,6 @@ namespace PRUNStatsSynchronizer
             Console.WriteLine("Parsing DTOs...");
             //now deconstruct the DTOs
 
-            var progress = 0;
             Console.WriteLine("Parsing planets...");
             var planets = companyDtos
                 .SelectMany(c => c.Planets ?? [])
@@ -53,9 +52,6 @@ namespace PRUNStatsSynchronizer
 
             foreach (var planetDto in planets)
             {
-                progress++;
-                //Console.WriteLine($"Parsing planet {progress} / {planets.Count} ({planetDto.PlanetNaturalId})");
-
                 var planet = allPlanets.FirstOrDefault(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
                 {
                     Name = planetDto.PlanetName,
@@ -76,11 +72,8 @@ namespace PRUNStatsSynchronizer
             var allCorporations = await _statsContext.Corporations.ToListAsync();
 
             var skipped = 0;
-            progress = 0;
             foreach (var companyDto in companyDtos)
             {
-                progress++;
-                //Console.WriteLine($"Parsing company {progress} / {companyDtos.Count} ({companyDto.CompanyCode})");
 
                 if (string.IsNullOrWhiteSpace(companyDto.UserName)) continue; //skip companies without a user
                 if (string.IsNullOrWhiteSpace(companyDto.CompanyName)) continue; //skip companies without a name
@@ -162,25 +155,33 @@ namespace PRUNStatsSynchronizer
 
             Console.WriteLine("Parsing bases...");
 
-            progress = 0;
+            allPlanets = await _statsContext.Planets
+                .Include(p => p.Bases)
+                .ToListAsync();
+            allCompanies = await _statsContext.Companies
+                .Include(c => c.Bases)
+                .ToListAsync();
+            var allBases = await _statsContext.Bases
+                .Include(b => b.Planet)
+                .ToListAsync();
+
             foreach (var cDto in companyDtos)
             {
-                progress++;
                 //Console.WriteLine($"Parsing company bases {progress} / {companyDtos.Count} ({cDto.CompanyCode})");
                 //for each base
                 foreach (var b in cDto.Planets)
                 {
                     //get planet
-                    var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == b.PlanetId);
+                    var planet = allPlanets.FirstOrDefault(p => p.PRGUID == b.PlanetId);
 
                     //get company
-                    var company = await _statsContext.Companies.FirstOrDefaultAsync(c => c.PRGUID == cDto.CompanyId);
+                    var company = allCompanies.FirstOrDefault(c => c.PRGUID == cDto.CompanyId);
 
                     if (planet is null || company is null) continue; //skip if planet or company is not found (should not happen)
 
                     //handle base create/update
-                    var baseModel = await _statsContext.Bases
-                        .FirstOrDefaultAsync(b => b.Planet.PRGUID == planet.PRGUID && b.Company.PRGUID == company.PRGUID)
+                    var baseModel = allBases
+                        .FirstOrDefault(x => x.Planet.PRGUID == planet.PRGUID && x.Company.PRGUID == company.PRGUID)
                     ??
                     new BaseModel
                     {
