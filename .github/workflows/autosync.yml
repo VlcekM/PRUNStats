@@ -1,0 +1,29 @@
+name: Autosync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 * * * *"
+
+jobs:
+  sync:
+    name: Synchronize production database
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+        
+    - name: Restore dependencies
+      run: dotnet restore PRUNStatsSynchronizer/PRUNStatsSynchronizer.csproj
+      
+    - name: Build
+      run: dotnet build PRUNStatsSynchronizer -c Release -o Release --no-restore --runtime linux-x64
+
+    - name: Run sync
+      run: Release/PRUNStatsSynchronizer.exe -- ${{ secrets.DB_CONNSTRING }}
+        
