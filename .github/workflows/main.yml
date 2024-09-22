@@ -24,7 +24,7 @@ jobs:
         dotnet-version: 8.0.x
       
     - name: Publish
-      run: dotnet build PRUNStatsApp -c Release -o Release --runtime win-x64
+      run: dotnet publish PRUNStatsApp -c Release -o Release --runtime win-x64
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
