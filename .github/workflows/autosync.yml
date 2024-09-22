@@ -1,5 +1,8 @@
 name: Autosync
 
+env:
+  PRUNStatsSynchronizer__ConnectionStrings__StatsContext: ${{ secrets.DB_CONNSTRING }}
+
 on:
   workflow_dispatch:
   schedule:
@@ -22,5 +25,5 @@ jobs:
       run: dotnet publish PRUNStatsSynchronizer -c Release -o Release
 
     - name: Run sync
-      run: Release/PRUNStatsSynchronizer.exe -- ${{ secrets.DB_CONNSTRING }}
+      run: Release/PRUNStatsSynchronizer.exe
         
