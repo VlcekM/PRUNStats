@@ -13,7 +13,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -22,12 +22,13 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+        cache: true
         
     - name: Restore dependencies
       run: dotnet restore PRUNStatsApp\PRUNStatsApp.csproj
       
     - name: Publish
-      run: dotnet publish PRUNStatsApp -c Release -o Release --no-restore
+      run: dotnet build PRUNStatsSynchronizer -c Release -o Release --no-restore --runtime win-x64
 
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v4
