@@ -23,9 +23,10 @@ jobs:
       with:
         dotnet-version: 8.0.x
         cache: true
+        cache-dependency-path: PRUNStatsApp/packages.lock.json
         
     - name: Restore dependencies
-      run: dotnet restore PRUNStatsApp\PRUNStatsApp.csproj
+      run: dotnet restore PRUNStatsApp/PRUNStatsApp.csproj
       
     - name: Publish
       run: dotnet build PRUNStatsSynchronizer -c Release -o Release --no-restore --runtime win-x64
