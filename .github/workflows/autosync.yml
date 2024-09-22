@@ -19,7 +19,7 @@ jobs:
         dotnet-version: 8.0.*
         
     - name: Build
-      run: dotnet publish PRUNStatsApp -c Release -o Release
+      run: dotnet publish PRUNStatsSynchronizer -c Release -o Release
 
     - name: Run sync
       run: ./Release/PRUNStatsSynchronizer.exe -- ${{ secrets.DB_CONNSTRING }}
