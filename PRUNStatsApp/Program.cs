@@ -38,6 +38,7 @@ builder.Services.AddSerilog((services, lc) =>
     lc
         .ReadFrom.Configuration(builder.Configuration)
         .ReadFrom.Services(services)
+        .WriteTo.Console()
         .WriteTo.File(path: @"logs\log.txt", rollingInterval: RollingInterval.Day)
         .Enrich.FromLogContext();
 });

@@ -124,7 +124,7 @@
             <PropertyColumn Property="x => x.Name" Title="Name" HeaderStyle="min-width:15em;"/>
             <PropertyColumn Property="x => x.UserName" Title="Player" HeaderStyle="min-width:15em;" />
 
-            <TemplateColumn Property="x => x.FactionText" Title="Faction" Sortable="false">
+            <TemplateColumn Title="Faction" Sortable="false">
                 <CellTemplate>
                     <MudStack Row>
                         @switch (context.Item.Faction)
