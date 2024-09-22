@@ -22,5 +22,5 @@ jobs:
       run: dotnet publish PRUNStatsSynchronizer -c Release -o Release
 
     - name: Run sync
-      run: ./Release/PRUNStatsSynchronizer.exe -- ${{ secrets.DB_CONNSTRING }}
+      run: Release/PRUNStatsSynchronizer.exe -- ${{ secrets.DB_CONNSTRING }}
         
