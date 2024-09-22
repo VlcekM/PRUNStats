@@ -33,7 +33,7 @@ namespace PRUNStatsSynchronizer
         /// </summary>
         private async Task SynchronizeCompaniesAsync()
         {
-            Console.WriteLine("Fetching companies from FIORest...");
+            Console.WriteLine("Fetching companies from FIO...");
             var companyDtos = await GetCompanyDTOsAsync();
 
             //get UTC now
@@ -49,12 +49,14 @@ namespace PRUNStatsSynchronizer
                 .DistinctBy(c => c.PlanetId)
                 .ToList();
 
+            var allPlanets = await _statsContext.Planets.ToListAsync();
+
             foreach (var planetDto in planets)
             {
                 progress++;
                 //Console.WriteLine($"Parsing planet {progress} / {planets.Count} ({planetDto.PlanetNaturalId})");
 
-                var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
+                var planet = allPlanets.FirstOrDefault(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
                 {
                     Name = planetDto.PlanetName,
                     NaturalId = planetDto.PlanetNaturalId,
@@ -69,6 +71,10 @@ namespace PRUNStatsSynchronizer
             Console.WriteLine("Saving planets to db...");
             await _statsContext.SaveChangesAsync();
 
+            var allCompanies = await _statsContext.Companies.ToListAsync();
+            var allUsers = await _statsContext.Users.ToListAsync();
+            var allCorporations = await _statsContext.Corporations.ToListAsync();
+
             var skipped = 0;
             progress = 0;
             foreach (var companyDto in companyDtos)
@@ -81,7 +87,7 @@ namespace PRUNStatsSynchronizer
                 if (string.IsNullOrWhiteSpace(companyDto.CompanyCode)) continue; //skip companies without a name
 
                 //check if the timestamp is after the last update
-                var company = await _statsContext.Companies.FirstOrDefaultAsync(c => c.PRGUID == companyDto.CompanyId);
+                var company = allCompanies.FirstOrDefault(c => c.PRGUID == companyDto.CompanyId);
                 if (companyDto.Timestamp <= company?.LastUpdatedFIO)
                 {
                     skipped++;
@@ -89,7 +95,7 @@ namespace PRUNStatsSynchronizer
                 }
 
                 //handle user create/update
-                var user = await _statsContext.Users.FirstOrDefaultAsync(u => u.PRGUID == companyDto.UserId) ?? new UserModel
+                var user = allUsers.FirstOrDefault(u => u.PRGUID == companyDto.UserId) ?? new UserModel
                 {
                     Username = companyDto.UserName,
                     PRGUID = companyDto.UserId,
@@ -99,7 +105,7 @@ namespace PRUNStatsSynchronizer
                 user.LastUpdatedAtUTC = now;
 
                 //handle corporation create/update
-                var corporation = await _statsContext.Corporations.FirstOrDefaultAsync(c => c.PRGUID == companyDto.CorporationId);
+                var corporation = allCorporations.FirstOrDefault(c => c.PRGUID == companyDto.CorporationId);
                 if (corporation is null && companyDto.CorporationId is not null)
                 {
                     corporation = new CorporationModel
