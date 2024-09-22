@@ -69,6 +69,7 @@ namespace PRUNStatsSynchronizer
             Console.WriteLine("Saving planets to db...");
             await _statsContext.SaveChangesAsync();
 
+            var skipped = 0;
             progress = 0;
             foreach (var companyDto in companyDtos)
             {
@@ -78,6 +79,14 @@ namespace PRUNStatsSynchronizer
                 if (string.IsNullOrWhiteSpace(companyDto.UserName)) continue; //skip companies without a user
                 if (string.IsNullOrWhiteSpace(companyDto.CompanyName)) continue; //skip companies without a name
                 if (string.IsNullOrWhiteSpace(companyDto.CompanyCode)) continue; //skip companies without a name
+
+                //check if the timestamp is after the last update
+                var company = await _statsContext.Companies.FirstOrDefaultAsync(c => c.PRGUID == companyDto.CompanyId);
+                if (companyDto.Timestamp <= company?.LastUpdatedFIO)
+                {
+                    skipped++;
+                    continue; //skip if the company is already up to date
+                }
 
                 //handle user create/update
                 var user = await _statsContext.Users.FirstOrDefaultAsync(u => u.PRGUID == companyDto.UserId) ?? new UserModel
@@ -115,20 +124,18 @@ namespace PRUNStatsSynchronizer
                 };
 
                 //handle company create/update
-                var company = await _statsContext.Companies.FirstOrDefaultAsync(c => c.PRGUID == companyDto.CompanyId) ??
-                                      //if it does not exist, create it
-                                      new CompanyModel
-                                      {
-                                          CompanyCode = companyDto.CompanyCode,
-                                          CompanyName = companyDto.CompanyName,
-                                          PRGUID = companyDto.CompanyId,
-                                          Corporation = corporation,
-                                          Faction = faction,
-                                          User = user,
-                                          FirstImportedAtUTC = now,
-                                          LastUpdatedAtUTC = now,
-                                          LastUpdatedFIO = companyDto.Timestamp,
-                                      };
+                company ??= new CompanyModel
+                            {
+                                CompanyCode = companyDto.CompanyCode,
+                                CompanyName = companyDto.CompanyName,
+                                PRGUID = companyDto.CompanyId,
+                                Corporation = corporation,
+                                Faction = faction,
+                                User = user,
+                                FirstImportedAtUTC = now,
+                                LastUpdatedAtUTC = now,
+                                LastUpdatedFIO = companyDto.Timestamp,
+                            };
 
                 user.LastUpdatedAtUTC = now;
                 if (corporation is not null) corporation.LastUpdatedAtUTC = now;
@@ -143,6 +150,7 @@ namespace PRUNStatsSynchronizer
                 _statsContext.Companies.Update(company);
             }
 
+            Console.WriteLine($"Skipped {skipped} companies due to them being up-to-date");
             Console.WriteLine("Saving companies to db...");
             await _statsContext.SaveChangesAsync();
 
