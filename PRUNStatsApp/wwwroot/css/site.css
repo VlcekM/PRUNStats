@@ -3,9 +3,7 @@
 }
 
 body {
-    background-image: url('../images/map.png');
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: #1f1f1f;
 }
 
 .pr-shadow {
