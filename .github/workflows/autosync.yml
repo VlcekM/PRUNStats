@@ -18,11 +18,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
         
-    - name: Restore dependencies
-      run: dotnet restore PRUNStatsSynchronizer/PRUNStatsSynchronizer.csproj
-      
     - name: Build
-      run: dotnet build PRUNStatsSynchronizer -c Release -o Release --no-restore --runtime linux-x64
+      run: dotnet publish PRUNStatsApp -c Release -o Release
 
     - name: Run sync
       run: Release/PRUNStatsSynchronizer.exe -- ${{ secrets.DB_CONNSTRING }}
