@@ -8,7 +8,7 @@ on:
 jobs:
   sync:
     name: Synchronize production database
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -16,13 +16,10 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 8.0.*
         
-    - name: Restore dependencies
-      run: dotnet restore PRUNStatsSynchronizer/PRUNStatsSynchronizer.csproj
-      
     - name: Build
-      run: dotnet build PRUNStatsSynchronizer -c Release -o Release --no-restore --runtime linux-x64
+      run: dotnet publish PRUNStatsSynchronizer -c Release -o Release
 
     - name: Run sync
       run: Release/PRUNStatsSynchronizer.exe -- ${{ secrets.DB_CONNSTRING }}
