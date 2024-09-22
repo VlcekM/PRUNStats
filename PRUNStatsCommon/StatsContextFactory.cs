@@ -7,6 +7,8 @@ namespace PRUNStatsCommon
     {
         public StatsContext CreateDbContext(string[] args)
         {
+            Console.WriteLine($"Creating DbContext with connstring: {args.FirstOrDefault()?[..20]}");
+
             var optionsBuilder = new DbContextOptionsBuilder<StatsContext>();
             optionsBuilder.UseSqlServer(args.FirstOrDefault());
 

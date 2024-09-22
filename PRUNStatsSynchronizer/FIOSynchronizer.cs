@@ -52,7 +52,7 @@ namespace PRUNStatsSynchronizer
             foreach (var planetDto in planets)
             {
                 progress++;
-                Console.WriteLine($"Parsing planet {progress} / {planets.Count} ({planetDto.PlanetNaturalId})");
+                //Console.WriteLine($"Parsing planet {progress} / {planets.Count} ({planetDto.PlanetNaturalId})");
 
                 var planet = await _statsContext.Planets.FirstOrDefaultAsync(p => p.PRGUID == planetDto.PlanetId) ?? new PlanetModel
                 {
@@ -73,7 +73,7 @@ namespace PRUNStatsSynchronizer
             foreach (var companyDto in companyDtos)
             {
                 progress++;
-                Console.WriteLine($"Parsing company {progress} / {companyDtos.Count} ({companyDto.CompanyCode})");
+                //Console.WriteLine($"Parsing company {progress} / {companyDtos.Count} ({companyDto.CompanyCode})");
 
                 if (string.IsNullOrWhiteSpace(companyDto.UserName)) continue; //skip companies without a user
                 if (string.IsNullOrWhiteSpace(companyDto.CompanyName)) continue; //skip companies without a name
@@ -152,7 +152,7 @@ namespace PRUNStatsSynchronizer
             foreach (var cDto in companyDtos)
             {
                 progress++;
-                Console.WriteLine($"Parsing company bases {progress} / {companyDtos.Count} ({cDto.CompanyCode})");
+                //Console.WriteLine($"Parsing company bases {progress} / {companyDtos.Count} ({cDto.CompanyCode})");
                 //for each base
                 foreach (var b in cDto.Planets)
                 {
