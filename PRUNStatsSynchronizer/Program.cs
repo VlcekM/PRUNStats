@@ -7,7 +7,7 @@ using System.Reflection;
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables("PRUNStatsSynchronizer")
+    .AddEnvironmentVariables("PRUNStatsSynchronizer__")
     .AddUserSecrets<Program>()
     .Build();
 
